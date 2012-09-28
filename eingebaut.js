@@ -1,4 +1,4 @@
-/* enable or disable pseudostreaming, swfobject optional, release */
+/*  */
 
 var Eingebaut = function(container, displayDevice, callback){
   var $ = jQuery;
@@ -126,7 +126,7 @@ var Eingebaut = function(container, displayDevice, callback){
       $this.video.prop('currentTime', Math.max(0,currentTime));
     }catch(e){}
   };
-  $this.getCurrentTime = function(currentTime) {
+  $this.getCurrentTime = function() {
     return ($this.video.prop('currentTime')||0);
   };
   $this.getEnded = function() {
@@ -157,8 +157,8 @@ var Eingebaut = function(container, displayDevice, callback){
   $this.getIsLive = function() {
     return($this.video.prop('isLive')||/.m3u8/.test($this.getSource())||/\/http$/.test($this.getSource())||false);
   };
-  $this.canPlayType = function(t) {
-    return $this.video[0].canPlayType(t);
+  $this.canPlayType = function(type) {
+    return $this.video[0].canPlayType(type);
   };
   
   /* LOAD! */
