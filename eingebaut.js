@@ -46,7 +46,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       //  make a simple <object> include with innerHTML after the containing object has been 
       //  placed in DOM. Only caveat is that classid must be set in IE, and not in other browsers.)
       $this.container.append($(document.createElement('div')).attr({'id':'FlashFallback'}));
-      swfobject.embedSWF(swfLocation, 'FlashFallback', '100%', '100%', '10.0.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'}); 
+      swfobject.embedSWF($this.swfLocation, 'FlashFallback', '100%', '100%', '10.0.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'}); 
       
       // Emulate enough of the jQuery <video> object for our purposes
       $this.video = {
