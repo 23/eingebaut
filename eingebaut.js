@@ -1,11 +1,10 @@
-/*  */
-
-var Eingebaut = function(container, displayDevice, callback){
+var Eingebaut = function(container, displayDevice, swfLocation, callback){
   var $ = jQuery;
   var $this = this;
   $this.container = $(container);
   $this.container.css({position:'relative'});
   $this.displayDevice = displayDevice||'html5';
+  $this.swfLocation = swfLocation||'/eingebaut/lib/FlashFallback/FlashFallbackDebug.swf';
   $this.callback = callback||function(){};
   $this.ready = false;
 
@@ -47,7 +46,7 @@ var Eingebaut = function(container, displayDevice, callback){
       //  make a simple <object> include with innerHTML after the containing object has been 
       //  placed in DOM. Only caveat is that classid must be set in IE, and not in other browsers.)
       $this.container.append($(document.createElement('div')).attr({'id':'FlashFallback'}));
-      swfobject.embedSWF('/eingebaut/lib/FlashFallback/FlashFallbackDebug.swf', 'FlashFallback', '100%', '100%', '10.0.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'}); 
+      swfobject.embedSWF(swfLocation, 'FlashFallback', '100%', '100%', '10.0.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'}); 
       
       // Emulate enough of the jQuery <video> object for our purposes
       $this.video = {

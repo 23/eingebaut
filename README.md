@@ -8,11 +8,13 @@ The project requires `jQuery` and optionally makes use of `SWFObject`.
 
 To initialize an Eingebaut player, go...
 
-   var eingebaut = new Eingebaut(container, device, callback);
+   var eingebaut = new Eingebaut(container, device, swfLocation, callback);
 
 `container` is either a jQuery object or a CSS selector for the element into which you want the player to be placed. 
 
 `device` is your prefered display device. Options are `html5` and `flash`. If the prefered device is not support by the browser, the alternative is selected.
+
+`swfLocation` is the relative location of the file `eingebaut.swf`, which is used for Flash fallback.
 
 `callback` is a function called whenever a player event occurs. The function takes a single argument, `event`, which is (logically) a string describing the current event (see below).
 
@@ -21,7 +23,7 @@ To initialize an Eingebaut player, go...
 
     <div id="video" style="width:640px; height:640px;"></div>
     <script>
-      var eingebaut = new Eingebaut($('#video'), 'html5', function(event){
+      var eingebaut = new Eingebaut($('#video'), 'html5', 'eingebaut.swf', function(event){
           if(event=='loaded' && eingebaut.displayDevice=='none') {
             alert('Eingebaut could find no way of playing video in your browser');
           } else {
@@ -29,7 +31,7 @@ To initialize an Eingebaut player, go...
           }
         });
       eingebaut.load();
-      eingebaut.setSource('');
+      eingebaut.setSource('...');
     </script>
     
 
