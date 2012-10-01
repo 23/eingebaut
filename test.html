@@ -11,10 +11,14 @@
   <body>
     <div id="video" style="width:640px; height:640px; background-color:yellow;"></div>
     <script>
-      var e = new Eingebaut($('#video'), 'flash', function(e){
-          console.debug(e);
+      var eingebaut = new Eingebaut($('#video'), 'flash', 'lib/FlashFallback/Eingebaut.swf', function(event){
+          if(event=='ready') {
+            eingebaut.setSource('http://videos.23video.com/889267/1221663/f0b651b6fec5f516597f29ff7c12dced/video_medium/download/the -royal-danish-theatre-video.mp4');
+            eingebaut.setPlaying(true);
+          }
+          console.debug(event);
         });
-      e.load();
+      eingebaut.load();
     </script>
   </body>
 </html>
