@@ -4,7 +4,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.container = $(container);
   $this.container.css({position:'relative'});
   $this.displayDevice = displayDevice||'html5';
-  $this.swfLocation = swfLocation||'/eingebaut/lib/FlashFallback/FlashFallbackDebug.swf';
+  $this.swfLocation = swfLocation||'/eingebaut/lib/FlashFallback/EingebautDebug.swf';
   $this.callback = callback||function(){};
   $this.ready = false;
 
@@ -97,7 +97,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     $this.video.prop('src', source);
   };
   $this.getSource = function(){
-    return $this.video.prop('src');
+    return $this.video.prop('src')||'';
   };
   $this.setPoster = function(poster) {
     $this.video.prop('poster', poster);
@@ -126,7 +126,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     }catch(e){}
   };
   $this.getCurrentTime = function() {
-    return ($this.video.prop('currentTime')||0);
+    try {
+      return ($this.video.prop('currentTime')||0);
+    }catch(e){return 0;}
   };
   $this.getEnded = function() {
     return $this.video.prop('ended');
