@@ -153,7 +153,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     }catch(e){}
   };
   $this.getVolume = function() {
-    $this.video.prop('volume');
+    return $this.video.prop('volume');
   };
   $this.getIsLive = function() {
     return($this.video.prop('isLive')||/.m3u8/.test($this.getSource())||/\/http$/.test($this.getSource())||false);
