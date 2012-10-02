@@ -24,7 +24,7 @@ package com.visual {
     private var image:VisualImage = new VisualImage();
     private var connection:NetConnection = new NetConnection();
     private var stream:NetStream;
-    private var pseudoStreamingOffset:Number = 0;
+    public var pseudoStreamingOffset:Number = 0;
     // A few helpers for live stream subscriptions
     private var fcSubscribeCount:int = 0;
     private var fcSubscribeMaxRetries:int = 3;
@@ -102,7 +102,7 @@ package com.visual {
       /////s = "rtmp://live.visualplatform.net/live/mp4:5200003-efeb7014d4283e9d066534d285b34c55.mp4";
       if(_source==s) return;
       trace('Loading video: ' + s);
-      this.pseudoStreamingOffset = 0;
+      //this really should be reset here, but we need to be able to overwrite with a property// this.pseudoStreamingOffset = 0;
       _source=s;
       reset();
     }

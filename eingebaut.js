@@ -5,8 +5,15 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.container.css({position:'relative'});
   $this.displayDevice = displayDevice||'html5';
   $this.swfLocation = swfLocation||'/eingebaut/lib/FlashFallback/EingebautDebug.swf';
-  $this.callback = callback||function(){};
+  $this._callback = callback||function(){};
   $this.ready = false;
+  $this.switching = false;
+
+  // The callback
+  $this.callback = function(e){
+    if($this.switching && e=='canplay') $this.switching = false;
+    $this._callback(e);
+  };
 
   /* HEAVY LIFTING */
   // Load either a html5 <video> element or something in Flash
@@ -18,6 +25,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0})    
         .bind('loadeddata progress timeupdate seeked canplay play playing pause loadedmetadata ended volumechange', function(e){
+            if(e.type=='canplay'&&_startTime>0) {
+              $this.setCurrentTime(_startTime);
+              _startTime = 0;
+            }
             $this.callback(e.type);
           });
       if(!$this.video[0].canPlayType) {
@@ -37,7 +48,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           $this.ready = true;
           $this.callback('ready');
         }
-        ev = {type:e};
         $this.callback(e);
       };
       
@@ -56,10 +66,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           play:function(){$this.video.call('setPlaying', true);},
           pause:function(){$this.video.call('setPlaying', false);}
         },
-        prop:function(key,value){
+        prop:function(key,value,param){
           if(key=='src') key='source';
           key = key.substring(0,1).toUpperCase() + key.substring(1);
-          return (typeof(value)!='undefined' ? $this.video.call('set' + key, value): $this.video.call('get' + key));
+          return (typeof(value)!='undefined' ? $this.video.call('set' + key, value, param): $this.video.call('get' + key));
         },
         call:function(method,arg1,arg2){
           if($this.video.element) {
@@ -93,8 +103,15 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   }
 
   /* METHODS */
-  $this.setSource = function(source) {
-    $this.video.prop('src', source);
+  _startTime = 0;
+  $this.setSource = function(source, startTime) {
+    $this.switching = true;
+    if ($this.displayDevice=='html5') {
+      $this.video.prop('src', source);
+      _startTime = startTime;
+    } else {
+      $this.video.prop('src', source, startTime);
+    }
   };
   $this.getSource = function(){
     return $this.video.prop('src')||'';
@@ -122,7 +139,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.setCurrentTime = function(currentTime) {
     try {
-      $this.video.prop('currentTime', Math.max(0,currentTime));
+      $this.video.prop('currentTime', Math.max(0,currentTime||0));
     }catch(e){}
   };
   $this.getCurrentTime = function() {

@@ -24,7 +24,9 @@ package {
         video.callback = function(ev:String):void {
           ExternalInterface.call("FlashFallbackCallback", ev);
         }
-        ExternalInterface.addCallback("setSource", function(source:String):void {
+        ExternalInterface.addCallback("setSource", function(source:String, startTime:Number=0):void {
+            trace('pseudoStreamingOffset = ' + startTime);
+            video.pseudoStreamingOffset = startTime;
             video.source = source;
           });
         ExternalInterface.addCallback("getSource", function():String{
