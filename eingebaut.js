@@ -184,7 +184,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     }
   };
   $this.setVolume = function(volume) {
+    if(volume<0) volume = 0;
+    if(volume>1) volume = 1;
     try {
+      volume = Math.round(volume*10)/10.0;
       $this.video.prop('volume', volume);
     }catch(e){}
   };
