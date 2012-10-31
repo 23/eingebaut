@@ -9,6 +9,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.ready = false;
   $this.switching = false;
 
+  // Blind for click and overlay (1x1px transparent gif to force layout in IE8)
+  $this.blind = $(document.createElement('div'))
+    .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundImage:'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==)'});
+  $this.container.append($this.blind);
+
   // The callback
   $this.callback = function(e){
     if($this.switching && e=='canplay') $this.switching = false;
@@ -24,17 +29,23 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0})    
-        .bind('loadeddata progress timeupdate seeked canplay play playing pause loadedmetadata ended volumechange', function(e){
+        .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
             if(e.type=='canplay'&&_startTime>0) {
               $this.setCurrentTime(_startTime);
               _startTime = 0;
+            }
+            if(e.type=='waiting'||e.type=='stalled') {
+              $this._stalled = true;
+            }
+            if(e.type=='canplay'||e.type=='play') {
+              $this._stalled = false;
             }
             $this.callback(e.type);
           });
       if(!$this.video[0].canPlayType) {
         return false; // no html5 video
       }
-      $this.container.append($this.video);
+      $this.container.prepend($this.video);
       this.ready = true;
       $this.callback('ready');
     } else {
@@ -55,7 +66,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       // (if we should want to eliminate the swfobject dependency, that's doable: 
       //  make a simple <object> include with innerHTML after the containing object has been 
       //  placed in DOM. Only caveat is that classid must be set in IE, and not in other browsers.)
-      $this.container.append($(document.createElement('div')).attr({'id':'FlashFallback'}));
+      $this.container.prepend($(document.createElement('div')).attr({'id':'FlashFallback'}));
       swfobject.embedSWF($this.swfLocation, 'FlashFallback', '100%', '100%', '10.0.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'}); 
       
       // Emulate enough of the jQuery <video> object for our purposes
@@ -129,7 +140,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.video[0].pause();
   };
   $this.getPlaying = function() {
-    return !($this.video.prop('paused')||$this.video.prop('seeking'));
+    return !$this.video.prop('paused');
   };
   $this.setPaused = function(paused) {
     $this.setPlaying(!paused);
@@ -153,13 +164,21 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.getSeeking = function() {
     return $this.video.prop('seeking');
   };
+  $this._stalled = false;
+  $this.getStalled = function() {
+    if ($this.displayDevice=='html5') {
+      return $this._stalled||false;
+    } else {
+      return $this.video.prop('stalled');
+    }
+  };
   $this.getDuration = function() {
     return $this.video.prop('duration');
   };
   $this.getBufferTime = function() {
     if ($this.displayDevice=='html5') {
       var b = $this.video.prop('buffered');
-      return(b && b.length ? b.end(0)||0 : 0);
+      return(b && b.length ? b.end(b.length-1)||0 : 0);
     } else {
       return $this.video.prop('bufferTime')||0;
     }

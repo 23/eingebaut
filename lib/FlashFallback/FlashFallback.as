@@ -75,6 +75,9 @@ package {
         ExternalInterface.addCallback("getSeeking", function():Boolean{
             return video.seeking;
           });
+        ExternalInterface.addCallback("getStalled", function():Boolean{
+            return video.stalled;
+          });
         ExternalInterface.addCallback("getDuration", function():Number{
             return video.duration;
           });

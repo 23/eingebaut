@@ -76,14 +76,17 @@ package com.visual {
       case VideoStatus.LOADING:
         break;
       case VideoStatus.CONNECTION_ERROR:
+        this.callback('stalled');
         break;
       case VideoStatus.PLAYING:
         this.callback('play');
         this.callback('playing');
         break;
       case VideoStatus.BUFFERING:
+        this.callback('stalled');
         break;
       case VideoStatus.SEEKING:
+        this.callback('seeked');
         break;
       case VideoStatus.PAUSED:
       case VideoStatus.STOPPED:
@@ -114,7 +117,7 @@ package com.visual {
     private var _poster:String = null;
     public function set poster(p:String):void {
       if(_poster==p) return;
-      this.addChild(image);
+      this.addChildAt(image,0);
       image.source = p;
       _poster=p;
     }
@@ -139,9 +142,14 @@ package com.visual {
       return (this.state == VideoStatus.SEEKING);
     }
 
+    // Property: Stalled
+    public function get stalled():Boolean {
+      return (this.state == VideoStatus.BUFFERING || this.state == VideoStatus.CONNECTION_ERROR);
+    }
+
     // Property: Ended
     public function get ended():Boolean {
-      return (this.stream && duration>0 && this.stream.time>=(duration-0.5));
+      return (this.stream && duration>0 && currentTime>=(duration-0.5));
     }
 
     // Property: Current time

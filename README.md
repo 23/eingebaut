@@ -77,3 +77,4 @@ To initialize an Eingebaut player, go...
 * *Fill in information above* to detail methods and callbacks further.
 * *Enable or disable pseudostreaming*: Add a property controlling whether or not to use HTTP Pseudo Streaming in Flash, this is currently always on.
 * *Make SWFObject optional*: This is done by simply using `<object>` instead of SWFObject, although this approach will mean that we are not able to do Flash checking or even version testing.
+* *seeking event in Flash*: 
