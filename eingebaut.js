@@ -30,15 +30,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
+            console.debug('html5 event', e.type);
             if(e.type=='canplay'&&_startTime>0) {
               $this.setCurrentTime(_startTime);
               _startTime = 0;
-            }
-            if(e.type=='waiting'||e.type=='stalled') {
-              $this._stalled = true;
-            }
-            if(e.type=='canplay'||e.type=='play') {
-              $this._stalled = false;
             }
             $this.callback(e.type);
           });
@@ -164,10 +159,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.getSeeking = function() {
     return $this.video.prop('seeking');
   };
-  $this._stalled = false;
   $this.getStalled = function() {
     if ($this.displayDevice=='html5') {
-      return $this._stalled||false;
+      return $this.readyState>=3;
     } else {
       return $this.video.prop('stalled');
     }
