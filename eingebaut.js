@@ -30,9 +30,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
-            try {
-              console.debug('html5 event', e.type);
-            }catch(e){}
+            //console.debug(e, (new Date).getTime()-begin);
             if(e.type=='canplay'&&_startTime>0) {
               $this.setCurrentTime(_startTime);
               _startTime = 0;
