@@ -28,9 +28,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       // HTML5 Display
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
-        .attr({'x-webkit-airplay':'allow', tabindex:0})    
+        .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
-            //console.debug(e, (new Date).getTime()-begin);
             if(e.type=='canplay'&&_startTime>0) {
               $this.setCurrentTime(_startTime);
               _startTime = 0;
@@ -43,6 +42,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.container.prepend($this.video);
       this.ready = true;
       $this.callback('ready');
+      $this.callback('progress');
+      $this.callback('timeupdate');
       $this.supportsVolumeChange();
     } else {
       if(!swfobject.hasFlashPlayerVersion('10.0.0')) {
