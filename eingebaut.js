@@ -43,6 +43,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.container.prepend($this.video);
       this.ready = true;
       $this.callback('ready');
+      $this.supportsVolumeChange();
     } else {
       if(!swfobject.hasFlashPlayerVersion('10.0.0')) {
         return false;  // no flash support
@@ -53,6 +54,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         if(!$this.ready) {
           $this.ready = true;
           $this.callback('ready');
+          $this.supportsVolumeChange();
         }
         $this.callback(e);
       };
@@ -193,6 +195,23 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.canPlayType = function(type) {
     return $this.video[0].canPlayType(type);
+  };
+
+  // We will test whether volume changing is support on load an fire a `volumechange` event
+  var _supportsVolumeChange = false; 
+  $this.supportsVolumeChange = function(){
+      if(_supportsVolumeChange) return true;
+      if($this.displayDevice!='html5') {
+          _supportsVolumeChange = true;
+      } else {
+          // functional test of volume on html5 devices (iPad, iPhone as the real target)
+          var v = document.createElement('video');
+          v.volume = .5;
+          _supportsVolumeChange = (v.volume==.5);
+          v = null;
+      }
+      $this.callback('volumechange');
+      return _supportsVolumeChange;
   };
   
   /* LOAD! */
