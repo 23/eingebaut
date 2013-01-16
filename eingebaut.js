@@ -6,6 +6,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.displayDevice = displayDevice||'html5';
   $this.swfLocation = swfLocation||'/eingebaut/lib/FlashFallback/EingebautDebug.swf';
   $this._callback = callback||function(){};
+  $this.fullscreenContext = 'document'; // can be overwritten to 'video' if you prefer only the video to be in full screen, not the entire document
   $this.ready = false;
   $this.switching = false;
 
@@ -196,6 +197,67 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.canPlayType = function(type) {
     return $this.video[0].canPlayType(type);
+  };
+
+  // HTML5 fullscreen for either the full document or the video itself (depending on the value of $this.fullscreenContext, default is 'document')
+  $this.hasFullscreen = function(type) {
+      if ($this.displayDevice!='html5') return false;
+
+      // First fullscreen mode: Full document, including all UI
+      if($this.fullscreenContext=='document') {
+          var de = document.documentElement;
+          if(de.requestFullScreen&&document.fullScreenEnabled) return true;
+          if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
+          if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
+      }
+      // Second fullscreen mode: Only the video element, relavant mostly for iPad
+      var ve = $this.video[0];
+      if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
+
+      return false;
+  };
+  $this.isFullscreen = function(type) {
+      if ($this.displayDevice!='html5') return false;
+      return $this.video[0].mozFullScreen||$this.video[0].webkitFullscreenEnabled||false;
+  };
+  $this.enterFullscreen = function(type) {
+      if ($this.displayDevice!='html5') return false;
+      var de = document.documentElement;
+      var ve = $this.video[0];
+      if($this.fullscreenContext=='document' && de.requestFullScreen) {
+          de.requestFullScreen();
+      } else if($this.fullscreenContext=='document' && de.mozRequestFullScreen) {
+          de.mozRequestFullScreen();
+      } else if($this.fullscreenContext=='document' && de.webkitRequestFullScreen) {
+          de.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+      } else if(ve.webkitEnterFullscreen) {
+          $this.setPlaying(true);
+          ve.webkitEnterFullscreen();
+      } else if(ve.mozRequestFullScreen) {
+          $this.setPlaying(true);
+          ve.mozRequestFullScreen();
+      } else {
+          return false;
+      }
+      return true;
+  };
+  $this.leaveFullscreen = function(type) {
+      if ($this.displayDevice!='html5') return false;
+      var ve = $this.video[0];
+      if($this.fullscreenContext=='document' && document.cancelFullScreen) {
+          document.cancelFullScreen();
+      } else if($this.fullscreenContext=='document' && document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+      } else if($this.fullscreenContext=='document' && document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+      }else if(ve.webkitCancelFullscreen) {
+          ve.webkitCancelFullscreen();
+      } else if(ve.mozCancelFullScreen) {
+          ve.mozCancelFullScreen();
+      } else {
+          return false;
+      }
+      return true;
   };
 
   // We will test whether volume changing is support on load an fire a `volumechange` event
