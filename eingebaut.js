@@ -37,6 +37,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
             }
             $this.callback(e.type);
           });
+
+      // Hide the standard Chrome on iPhone
+      if(!$this.allowHiddenControls()) $this.video.css({width:1,height:1});
+
       if(!$this.video[0].canPlayType) {
         return false; // no html5 video
       }
@@ -127,6 +131,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     return $this.video.prop('src')||'';
   };
   $this.setPoster = function(poster) {
+    if(!$this.allowHiddenControls()) {
+      $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain'});
+    }
     $this.video.prop('poster', poster);
   };
   $this.getPoster = function() {
@@ -198,6 +205,16 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.canPlayType = function(type) {
     return $this.video[0].canPlayType(type);
   };
+
+  // iPhone in particular doesn't allow controls in <video> to be hidden entirely, meaning that we
+  // shouldn't show the <video> element, but instead a thumbnail, when the video is paused.
+  $this.allowHiddenControls = function() {
+      if ($this.displayDevice=='html5'&&/iPhone/.test(navigator.userAgent)) {
+          return false;
+      } else {
+          return true;
+      }
+  }
 
   // HTML5 fullscreen for either the full document or the video itself (depending on the value of $this.fullscreenContext, default is 'document')
   $this.hasFullscreen = function(type) {
