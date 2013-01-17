@@ -31,7 +31,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
-            if(e.type=='canplay'&&_startTime>0) {
+            if(e.type=='loadedmetadata'&&_startTime>0) {
               $this.setCurrentTime(_startTime);
               _startTime = 0;
             }
@@ -140,10 +140,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     return $this.video.prop('poster');
   };
   $this.setPlaying = function(playing) {
-    if (playing)
+    if (playing) {
+      $this.video[0].preload = 'preload';
       $this.video[0].play();
-    else 
+    } else {
       $this.video[0].pause();
+    }
   };
   $this.getPlaying = function() {
     return !$this.video.prop('paused');
@@ -155,7 +157,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     return $this.video.prop('paused');
   };
   $this.setCurrentTime = function(currentTime) {
-    try {
+    if($this.displayDevice=='html5'&&$this.video[0].readyState<3) _startTime = currentTime;
+    try {      
       $this.video.prop('currentTime', Math.max(0,currentTime||0));
     }catch(e){}
   };
@@ -172,7 +175,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.getStalled = function() {
     if ($this.displayDevice=='html5') {
-      return $this.readyState>=3;
+      return $this.video[0].readyState<3 && $this.video[0].readyState>0;
     } else {
       return $this.video.prop('stalled');
     }
