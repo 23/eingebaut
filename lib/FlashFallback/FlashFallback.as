@@ -21,11 +21,12 @@ package {
       addChild(video);
       
       if (ExternalInterface.available) {
+
         video.callback = function(ev:String):void {
           ExternalInterface.call("FlashFallbackCallback", ev);
         }
+
         ExternalInterface.addCallback("setSource", function(source:String, startTime:Number=0):void {
-            trace('pseudoStreamingOffset = ' + startTime);
             video.pseudoStreamingOffset = startTime;
             video.source = source;
           });

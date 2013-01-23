@@ -51,7 +51,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.callback('timeupdate');
       $this.supportsVolumeChange();
     } else {
-      if(!swfobject.hasFlashPlayerVersion('10.0.0')) {
+      if(!swfobject.hasFlashPlayerVersion('10.1.0')) {
         return false;  // no flash support
       }
       

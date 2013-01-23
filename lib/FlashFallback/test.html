@@ -6,7 +6,7 @@
       window.FlashFallbackCallback = function(e){console.debug(e);}
       var f = null;
       swfobject.embedSWF(
-                         'FlashFallbackDebug.swf', 
+                         'EingebautDebug.swf', 
                          'f', 
                          '100%', 
                          '90%', 
@@ -21,8 +21,10 @@
                          );
     </script>
     
-    <input type="button" onclick="f.setSource('http://test.23video.com/453018/456401/d15a571ffae0a8bf9d16d6bbcad6d8cd/video_hd/download/download-video.mp4'); f.setPlaying(true);" value="source" />
+    <input type="button" onclick="f.setPoster('http://test.23video.com/453018/456401/d15a571ffae0a8bf9d16d6bbcad6d8cd/large/download-video.jpg');" value="poster" />
+    <input type="button" onclick="f.setSource('http://test.23video.com/453018/456401/d15a571ffae0a8bf9d16d6bbcad6d8cd/video_hd/download/download-video.mp4');" value="source" />
     <input type="button" onclick="f.setPlaying(true);" value="play" />
     <input type="button" onclick="f.setPaused(true);" value="pause" />
+    <input type="button" onclick="f.setCurrentTime(120);" value="2min" />
   </body>
 </html>

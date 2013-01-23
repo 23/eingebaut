@@ -59,6 +59,7 @@ To initialize an Eingebaut player, go...
 
 ### Callbacks
 
+* `ready`
 * `progress`
 * `timeupdate`
 * `seeked`
