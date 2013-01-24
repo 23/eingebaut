@@ -23,6 +23,7 @@ package {
       if (ExternalInterface.available) {
 
         video.callback = function(ev:String):void {
+          trace('FlashFallbackCallback: ' + ev);
           ExternalInterface.call("FlashFallbackCallback", ev);
         }
 

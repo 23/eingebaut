@@ -22,6 +22,7 @@ package com.visual {
         private var video:MediaPlayer = new MediaPlayer(); 
         private var videoElement:VideoElement = null;
         private var loadFired:Boolean = false;
+        private var videoEnded:Boolean = false;
         private var attachedEvents:Boolean = false;
         public var pseudoStreamingOffset:Number = 0;
 
@@ -60,6 +61,7 @@ package com.visual {
             //this really should be reset here, but we need to be able to overwrite with a property// this.pseudoStreamingOffset = 0;
 
             this.loadFired = false;
+            this.videoEnded = false;
             var isPlaying:Boolean = video.playing;
             var pseudoSource:String = '';
             if(this.pseudoStreamingOffset==0) {
@@ -72,12 +74,16 @@ package com.visual {
             videoElement = new VideoElement(resource, new HTTPStreamingNetLoader()); 
             videoElement.smoothing = true;
             videoContainer.addMediaElement(videoElement); 
+            video.autoRewind = false;
             video.autoPlay = isPlaying;
 
             if(!this.attachedEvents) {
                 this.video.addEventListener('durationChange', function():void{_duration=video.duration;});
                 this.video.addEventListener('bytesLoadedChange', function():void{callback('progress');});
-                this.video.addEventListener('complete', function():void{callback('ended');});
+                this.video.addEventListener('complete', function():void{
+                    videoEnded = true;
+                    callback('ended');
+                });
                 this.video.addEventListener('volumeChange', function():void{callback('volumechange');});
                 this.video.addEventListener('currentTimeChange', function():void{callback('timeupdate');});
                 this.video.addEventListener('canPlayChange', function():void{if(video.canPlay) callback('canplay');});
@@ -92,7 +98,7 @@ package com.visual {
                     } else if( video.state=='playing' ) {
                         callback('play');
                         callback('playing');
-                    } else if( video.state=='paused' ) {
+                    } else if( video.state=='paused'||video.state=='ready' ) {
                         callback('pause');
                     }
                 });
@@ -122,6 +128,7 @@ package com.visual {
         // Property: Playing
         public function set playing(p:Boolean):void {
             if(p) {
+                if(this.videoEnded) this.currentTime = 0;
                 this.video.play();
             } else {
                 this.video.pause();
@@ -177,7 +184,7 @@ package com.visual {
             if(this.duration<=0 || bytesLoaded<=0 || bytesTotal<=0) {
                 return 0;
             } else {
-                return this.pseudoStreamingOffset+((bytesLoaded/bytesTotal)*duration);
+                return this.pseudoStreamingOffset+((bytesLoaded/bytesTotal)*_duration);
             }
         }
     
