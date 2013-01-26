@@ -2,7 +2,6 @@ package com.visual {
     /* Flash widgets */
     import flash.display.Sprite;
     import flash.external.ExternalInterface;
-    import flash.events.ErrorEvent;
     import flash.events.Event;
 
     /* OSMF widgets */
@@ -30,7 +29,7 @@ package com.visual {
         private function trace(s:String):void {
             try {
                 ExternalInterface.call("console.log", "FlashFallback", s);
-            }catch(e:ErrorEvent){}
+            }catch(e:Error){}
         }
 
         // Callback for events
@@ -206,7 +205,7 @@ package com.visual {
             try {
                 this.videoContainer.width = this.stage.stageWidth;
                 this.videoContainer.height = this.stage.stageHeight;
-            }catch(e:ErrorEvent){}
+            }catch(e:Error){}
        }
     }
 }

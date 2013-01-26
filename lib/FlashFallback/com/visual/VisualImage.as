@@ -4,10 +4,8 @@ package com.visual {
   import flash.net.URLRequest;
   import flash.display.Bitmap;
   import flash.system.LoaderContext; 
-
   import flash.external.ExternalInterface;
   import flash.events.Event;
-  import flash.events.ErrorEvent;
 
   public class VisualImage extends Sprite {
     private var loader:Loader;
@@ -18,7 +16,7 @@ package com.visual {
     private function trace(s:String):void {
       try {
         ExternalInterface.call("console.log", "FlashFallback", s);
-      }catch(e:ErrorEvent){}
+      }catch(e:Error){}
     }
 
     // Constructor method
@@ -85,17 +83,23 @@ package com.visual {
 
     // Property: Width
     public function get imageWidth():Number {
-      return (loader && loader.contentLoaderInfo ? loader.contentLoaderInfo.width : 0);
+      try {
+        return (loader && loader.contentLoaderInfo ? loader.contentLoaderInfo.width : 0);
+      }catch(e:Error) {}
+      return 1;
     }
     // Property: Height
     public function get imageHeight():Number {
-      return (loader && loader.contentLoaderInfo ? loader.contentLoaderInfo.height : 0);
+      try {
+        return (loader && loader.contentLoaderInfo ? loader.contentLoaderInfo.height : 0);
+      }catch(e:Error) {}
+      return 1;
     }
     // Property: Aspect ratio
     public function get imageAspectRatio():Number {
       try {
         return this.imageWidth/this.imageHeight;
-      }catch(e:ErrorEvent) {}
+      }catch(e:Error) {}
       return 1;
     }
   }

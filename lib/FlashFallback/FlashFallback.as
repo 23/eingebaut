@@ -3,7 +3,6 @@ package {
   import flash.events.Event;
   import flash.external.ExternalInterface;
   import com.visual.VisualVideo;
-  import flash.events.ErrorEvent;
   import flash.system.Security;
 
   public class FlashFallback extends Sprite {
