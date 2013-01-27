@@ -26,6 +26,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.loadDisplayDevice = function(displayDevice){
     $this.displayDevice = displayDevice;
     if ($this.displayDevice=='html5') {
+      if(/MSIE/.test(navigator.userAgent)) {
+        // Internet Explorer 10 does support HTML5 video, but with a number of caveat. 
+        // There are notable bugs in the playback quality. And support for Byte-Range 
+        // scrubbing is non-existant. Here, we simply opt out and fall back to Flash, 
+        // even is this may seem like a crude compromise.
+        return false;
+      }
+
       // HTML5 Display
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
