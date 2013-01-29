@@ -233,7 +233,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // HTML5 fullscreen for either the full document or the video itself (depending on the value of $this.fullscreenContext, default is 'document')
   $this.hasFullscreen = function(type) {
       if ($this.displayDevice!='html5') return false;
-
+      if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
+      
       // First fullscreen mode: Full document, including all UI
       if($this.fullscreenContext=='document') {
           var de = document.documentElement;
@@ -242,14 +243,20 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
       }
       // Second fullscreen mode: Only the video element, relavant mostly for iPad
-      var ve = $this.video[0];
-      if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
+      if($this.fullscreenContext=='video' || /iPad/.test(navigator.userAgent)) {
+          var ve = $this.video[0];
+          if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
+      }
 
       return false;
   };
+  $this.switchedToFullscreen = false;
   $this.isFullscreen = function(type) {
       if ($this.displayDevice!='html5') return false;
-      return $this.video[0].mozFullScreen||$this.video[0].webkitFullscreenEnabled||false;
+      return $this.switchedToFullscreen;
+      //if($this.video[0].mozFullScreen) return $this.video[0].mozFullScreen();
+      //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
+      //return false;
   };
   $this.enterFullscreen = function(type) {
       if ($this.displayDevice!='html5') return false;
@@ -268,18 +275,21 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           $this.setPlaying(true);
           ve.mozRequestFullScreen();
       } else {
+          $this.switchedToFullscreen = false;
           return false;
       }
+      $this.switchedToFullscreen = true;
       return true;
   };
   $this.leaveFullscreen = function(type) {
       if ($this.displayDevice!='html5') return false;
+      $this.switchedToFullscreen = false;
       var ve = $this.video[0];
-      if($this.fullscreenContext=='document' && document.cancelFullScreen) {
+      if(document.cancelFullScreen) {
           document.cancelFullScreen();
-      } else if($this.fullscreenContext=='document' && document.mozCancelFullScreen) {
+      } else if(document.mozCancelFullScreen) {
           document.mozCancelFullScreen();
-      } else if($this.fullscreenContext=='document' && document.webkitCancelFullScreen) {
+      } else if(document.webkitCancelFullScreen) {
           document.webkitCancelFullScreen();
       }else if(ve.webkitCancelFullscreen) {
           ve.webkitCancelFullscreen();
