@@ -70,7 +70,6 @@ To initialize an Eingebaut player, go...
 * `loadedmetadata`
 * `ended`
 * `volumechange` 
-* `displaydevice`
 * `loaded`
 
 ### Todo
