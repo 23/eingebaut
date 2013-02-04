@@ -39,9 +39,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
-            if(e.type=='loadedmetadata'&&_startTime>0) {
-              $this.setCurrentTime(_startTime);
-              _startTime = 0;
+            if($this.video.prop('seekable').length>0 && _startTime>0) {
+                try {
+                    // The iPad implementation of this seems to have a weird deficiency where setting currentTime is not allowed
+                    // on the DOM object immediately after the video is seekable. Catching the error here will simply rerun the 
+                    // attemp over an over again for every even -- until it works and _startTime is reset.
+                    $this.video[0].currentTime = _startTime;
+                    _startTime = 0;
+                }catch(e){}
             }
             $this.callback(e.type);
           });
