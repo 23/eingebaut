@@ -238,7 +238,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // HTML5 fullscreen for either the full document or the video itself (depending on the value of $this.fullscreenContext, default is 'document')
   $this.hasFullscreen = function(type) {
       if ($this.displayDevice!='html5') return false;
-      if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
+      try {
+          if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
+      }catch(e){}
       
       // First fullscreen mode: Full document, including all UI
       if($this.fullscreenContext=='document') {
