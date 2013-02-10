@@ -17,7 +17,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
 
   // The callback
   $this.callback = function(e){
-    if($this.switching && e=='canplay') $this.switching = false;
+    if($this.switching && (e=='canplay'||e=='play')) $this.switching = false;
     $this._callback(e);
   };
 
