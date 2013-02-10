@@ -5,23 +5,26 @@ package com.visual {
     import flash.events.Event;
 
     /* OSMF widgets */
-    import org.osmf.containers.MediaContainer; 
-    import org.osmf.elements.VideoElement; 
+    import org.osmf.media.MediaPlayerSprite;
     import org.osmf.media.MediaPlayer;
     import org.osmf.media.URLResource;
-    import org.osmf.net.httpstreaming.HTTPStreamingNetLoader;
+    import org.osmf.elements.VideoElement;
+    import org.osmf.media.MediaElement;
     import org.osmf.utils.OSMFSettings;
     import org.osmf.events.LoadEvent;
+    import org.osmf.layout.LayoutMetadata;
+    import org.osmf.layout.ScaleMode;
 
     public class VisualVideo extends Sprite {
         // Create the container classes to displays media. 
         OSMFSettings.enableStageVideo = false;
         private var image:VisualImage = new VisualImage();
-        private var videoContainer:MediaContainer = new MediaContainer(); 
-        private var video:MediaPlayer = new MediaPlayer(); 
-        private var videoElement:VideoElement = null;
+        private var videoContainer:MediaPlayerSprite = null;
+        private var video:MediaPlayer = null;
+        private var layout:LayoutMetadata = new LayoutMetadata();
         private var loadFired:Boolean = false;
         private var videoEnded:Boolean = false;
+        private var queuePlay:Boolean = false;
         private var attachedEvents:Boolean = false;
         public var pseudoStreamingOffset:Number = 0;
 
@@ -41,11 +44,16 @@ package com.visual {
         private function init():void {
             if(inited) return;
 
-            // Add the MediaContainer instance to the stage
-            this.addChild(videoContainer); 
+            // Alignment
+            layout.scaleMode = ScaleMode.LETTERBOX;
+            layout.verticalAlign = 'middle';
+            layout.horizontalAlign = 'center';
             // Size
             this.stage.addEventListener(Event.RESIZE, matchVideoSize);
             matchVideoSize();
+            // Add video stage
+            videoContainer = new MediaPlayerSprite();
+            this.addChild(videoContainer); 
 
             inited = true;
         }
@@ -61,7 +69,7 @@ package com.visual {
 
             this.loadFired = false;
             this.videoEnded = false;
-            var isPlaying:Boolean = video.playing;
+            var isPlaying:Boolean = (video && video.playing);
             var pseudoSource:String = '';
             if(this.pseudoStreamingOffset==0) {
                 pseudoSource = _source;
@@ -69,12 +77,17 @@ package com.visual {
                 pseudoSource = _source + (_source.match(new RegExp("\?")) ? '&' : '?') + 'start=' + this.pseudoStreamingOffset;
             }
             _duration = 0;
-            var resource:URLResource = new URLResource(pseudoSource); 
-            videoElement = new VideoElement(resource, new HTTPStreamingNetLoader()); 
-            videoElement.smoothing = true;
-            videoContainer.addMediaElement(videoElement); 
+
+            // Load the stream and attach to playback
+  	    var resource:URLResource = new URLResource(pseudoSource);
+            video = videoContainer.mediaPlayer;
+            video.autoPlay = isPlaying||queuePlay;
+            queuePlay = false;
             video.autoRewind = false;
-            video.autoPlay = isPlaying;
+            videoContainer.resource = new URLResource(pseudoSource);
+            videoContainer.media.addMetadata(LayoutMetadata.LAYOUT_NAMESPACE, layout);
+            if (videoContainer.media is VideoElement) (videoContainer.media as VideoElement).smoothing = true;
+            matchVideoSize();
 
             if(!this.attachedEvents) {
                 this.video.addEventListener('durationChange', function():void{_duration=video.duration;});
@@ -85,7 +98,15 @@ package com.visual {
                 });
                 this.video.addEventListener('volumeChange', function():void{callback('volumechange');});
                 this.video.addEventListener('currentTimeChange', function():void{callback('timeupdate');});
-                this.video.addEventListener('canPlayChange', function():void{if(video.canPlay) callback('canplay');});
+                this.video.addEventListener('canPlayChange', function():void{
+                    if(video.canPlay) {
+                        callback('canplay');
+                        if(queuePlay) {
+                            playing = true;
+                            queuePlay = false;
+                        }
+                    }
+                });
                 this.video.addEventListener('mediaPlayerStateChange', function():void{
                     if( !loadFired && (video.state=='playing'||video.state=='buffering'||video.state=='loading'||video.state=='ready')) {
                         callback('loadeddata');
@@ -103,8 +124,6 @@ package com.visual {
                 });
                 this.attachedEvents = true;
             }
-
-            video.media = videoElement; 
         }
         public function get source():String {
             return _source;
@@ -126,34 +145,41 @@ package com.visual {
         
         // Property: Playing
         public function set playing(p:Boolean):void {
-            if(p) {
-                if(this.videoEnded) this.currentTime = 0;
-                this.video.play();
-            } else {
-                this.video.pause();
+            if(!this.video) return;
+            try {
+                if(p) {
+                    if(this.videoEnded) this.currentTime = 0;
+                    this.video.play();
+                } else {
+                    this.video.pause();
+                }
+            }catch(e:Error){
+                queuePlay = p;
             }
         }
         public function get playing():Boolean {
-            return this.video.playing;
+          
+            return this.video && this.video.playing;
         }
         
         // Property: Seeking
         public function get seeking():Boolean {
-            return this.video.seeking;
+            return this.video && this.video.seeking;
         }
         
         // Property: Stalled
         public function get stalled():Boolean {
-            return (this.video.state=='buffering' || this.video.state=='loading' ||  this.video.state=='playbackError');
+            return (this.video && (this.video.state=='buffering' || this.video.state=='loading' ||  this.video.state=='playbackError'));
         }
         
         // Property: Ended
         public function get ended():Boolean {
-            return false;
+            return this.videoEnded;
         }
         
         // Property: Current time
         public function set currentTime(ct:Number):void {
+            if(!this.video) return;
             if(ct<0||ct>duration) return;
             if(isLive) return;
 
@@ -167,31 +193,43 @@ package com.visual {
             }
         }
         public function get currentTime():Number {
-            return this.pseudoStreamingOffset + this.video.currentTime;
+            return (this.video ? this.pseudoStreamingOffset + this.video.currentTime : 0);
         }
         
         // Property: Duration
         private var _duration:Number = 0; 
         public function get duration():Number {
-            return this.pseudoStreamingOffset+_duration;
+            if(isLive) {
+              return currentTime;
+            } else {
+              return (this.video ? this.pseudoStreamingOffset+_duration : 0);
+            }
         }
         
         // Property: Buffer time
         public function get bufferTime():Number {
-            var bytesLoaded:int = (this.video ? this.video.bytesLoaded : 0);
-            var bytesTotal:int = (this.video ? this.video.bytesTotal : 0);
-            if(this.duration<=0 || bytesLoaded<=0 || bytesTotal<=0) {
-                return 0;
+            if(!this.video) return 0;
+
+            if(isLive) {
+                return currentTime;
             } else {
-                return this.pseudoStreamingOffset+((bytesLoaded/bytesTotal)*_duration);
+                var bytesLoaded:int = (this.video ? this.video.bytesLoaded : 0);
+                var bytesTotal:int = (this.video ? this.video.bytesTotal : 0);
+                if(this.duration<=0 || bytesLoaded<=0 || bytesTotal<=0) {
+                    return 0;
+                } else {
+                    return this.pseudoStreamingOffset+((bytesLoaded/bytesTotal)*_duration);
+                }
             }
         }
     
         // Property: Volume
         public function set volume(v:Number):void {
+            if(!this.video) return;
             this.video.volume = v;
         }
         public function get volume():Number {
+            if(!this.video) return 1;
             return this.video.volume;
         }
 
@@ -202,10 +240,8 @@ package com.visual {
 
 
         private function matchVideoSize(e:Event=null):void {
-            try {
-                this.videoContainer.width = this.stage.stageWidth;
-                this.videoContainer.height = this.stage.stageHeight;
-            }catch(e:Error){}
+            layout.height = this.stage.stageHeight;
+            layout.width = this.stage.stageWidth;
        }
     }
 }
