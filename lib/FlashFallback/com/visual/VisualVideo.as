@@ -48,12 +48,12 @@ package com.visual {
             layout.scaleMode = ScaleMode.LETTERBOX;
             layout.verticalAlign = 'middle';
             layout.horizontalAlign = 'center';
-            // Size
-            this.stage.addEventListener(Event.RESIZE, matchVideoSize);
-            matchVideoSize();
             // Add video stage
             videoContainer = new MediaPlayerSprite();
             this.addChild(videoContainer); 
+            // Size
+            this.stage.addEventListener(Event.RESIZE, matchVideoSize);
+            matchVideoSize();
 
             inited = true;
         }
@@ -240,8 +240,12 @@ package com.visual {
 
 
         private function matchVideoSize(e:Event=null):void {
-            layout.height = this.stage.stageHeight;
-            layout.width = this.stage.stageWidth;
+            try {
+                videoContainer.height = this.stage.stageHeight;
+                videoContainer.width = this.stage.stageWidth;
+                layout.height = this.stage.stageHeight;
+                layout.width = this.stage.stageWidth;
+            }catch(e:Error){}
        }
     }
 }
