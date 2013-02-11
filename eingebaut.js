@@ -147,8 +147,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     return $this.video.prop('src')||'';
   };
   $this.setPoster = function(poster) {
-    if(!$this.allowHiddenControls()) {
-      $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain'});
+    if ($this.displayDevice=='html5') {
+      // This is required when $this.allowHiddenControls() is true, but also fixes a bug where Chrome wasn't 
+      // showing the native poster image within its <video> tag.
+      $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
     }
     $this.video.prop('poster', poster);
   };
