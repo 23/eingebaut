@@ -8,28 +8,28 @@ Behind the scenes, the library will use either HTML5 `<video>` or Adobe Flash to
 
 To play back video, initialize an Eingebaut object:
 
-    ```javascript
-    var eingebaut = new Eingebaut(container, device, swfLocation, callback);
-    ```
+```javascript
+  var eingebaut = new Eingebaut(container, device, swfLocation, callback);
+```
 
 The simple example to start playing video might look like this:
 
-    ```html
-    <div id=“video” style=“width:640px; height:360px”></div>
-    <script>
-      var eingebaut = new Eingebaut('#video', 'html5', ‘Eingebaut.swf', function(event){
+```html
+<div id=“video” style=“width:640px; height:360px”></div>
+<script>
+  var eingebaut = new Eingebaut('#video', 'html5', ‘Eingebaut.swf', function(event){
           if(event=='loaded' && eingebaut.displayDevice=='none') {
             alert('Eingebaut could find no way of playing video in your browser');
           } else {
             console.debug('Eingebaut callback:', event);
           }
         });
-      eingebaut.load();
-      eingebaut.setSource(‘my-video.mp4’);
-      eingebaut.setPoster(‘my-video-poster.jpg’);
-      eingebaut.setPlaying(true);
-    </script>
-    ```
+  eingebaut.load();
+  eingebaut.setSource(‘my-video.mp4’);
+  eingebaut.setPoster(‘my-video-poster.jpg’);
+  eingebaut.setPlaying(true);
+</script>
+```
 
 ### Boostrapping Eingebaut
 
