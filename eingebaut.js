@@ -238,7 +238,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   }
 
   // HTML5 fullscreen for either the full document or the video itself (depending on the value of $this.fullscreenContext, default is 'document')
-  $this.hasFullscreen = function(type) {
+  $this.hasFullscreen = function() {
       if ($this.displayDevice!='html5') return false;
       try {
           if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
@@ -260,14 +260,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       return false;
   };
   $this.switchedToFullscreen = false;
-  $this.isFullscreen = function(type) {
+  $this.isFullscreen = function() {
       if ($this.displayDevice!='html5') return false;
       return $this.switchedToFullscreen;
       //if($this.video[0].mozFullScreen) return $this.video[0].mozFullScreen();
       //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
       //return false;
   };
-  $this.enterFullscreen = function(type) {
+  $this.enterFullscreen = function() {
       if ($this.displayDevice!='html5') return false;
       var de = document.documentElement;
       var ve = $this.video[0];
@@ -290,7 +290,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.switchedToFullscreen = true;
       return true;
   };
-  $this.leaveFullscreen = function(type) {
+  $this.leaveFullscreen = function() {
       if ($this.displayDevice!='html5') return false;
       $this.switchedToFullscreen = false;
       var ve = $this.video[0];
