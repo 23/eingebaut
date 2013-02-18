@@ -1,4 +1,4 @@
-### Eingebaut
+## Eingebaut
 
 Eingebaut is a JavaScript library, built to enable simple cross-browser video playback. It supports the vast majority of both desktop and mobile browsers. And it does both on-demand and live video.
 
@@ -9,7 +9,7 @@ Behind the scenes, the library will use either HTML5 `<video>` or Adobe Flash to
 To play back video, initialize an Eingebaut object:
 
 ```javascript
-  var eingebaut = new Eingebaut(container, device, swfLocation, callback);
+var eingebaut = new Eingebaut(container, device, swfLocation, callback);
 ```
 
 The simple example to start playing video might look like this:
@@ -18,12 +18,12 @@ The simple example to start playing video might look like this:
 <div id=“video” style=“width:640px; height:360px”></div>
 <script>
   var eingebaut = new Eingebaut('#video', 'html5', ‘Eingebaut.swf', function(event){
-          if(event=='loaded' && eingebaut.displayDevice=='none') {
-            alert('Eingebaut could find no way of playing video in your browser');
-          } else {
-            console.debug('Eingebaut callback:', event);
-          }
-        });
+      if(event=='loaded' && eingebaut.displayDevice=='none') {
+        alert('Eingebaut could find no way of playing video in your browser');
+      } else {
+        console.debug('Eingebaut callback:', event);
+      }
+    });
   eingebaut.load();
   eingebaut.setSource(‘my-video.mp4’);
   eingebaut.setPoster(‘my-video-poster.jpg’);
@@ -84,20 +84,20 @@ Flash/OSMF (`displayDevice=“flash”`) will play:
 
 ### Callbacks
 
-* `ready`
-* `progress`
-* `timeupdate`
-* `seeked`
-* `canplay`
-* `play`
-* `playing`
-* `pause`
-* `loadedmetadata`
-* `ended`
-* `volumechange` 
-* `loaded`
+* `ready`: ...
+* `progress`: ...
+* `timeupdate`: ...
+* `seeked`: ...
+* `canplay`: ...
+* `play`: ...
+* `playing`: ...
+* `pause`: ...
+* `loadedmetadata`: ...
+* `ended`: ...
+* `volumechange` : ...
+* `loaded`: ...
 
-### Dependencies and Supported Browsers
+### Dependencies and Supported Browsers/Devices
 
 Eingebaut has been tested and work in Internet Explorer 6+, Safari 4+, Opera 9+ and Firefox 3+ along with Mobile Safari on all recent versions of iOS for iPad and iPhone.
 
