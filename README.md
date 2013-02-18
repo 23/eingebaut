@@ -8,10 +8,13 @@ Behind the scenes, the library will use either HTML5 `<video>` or Adobe Flash to
 
 To play back video, initialize an Eingebaut object:
 
-   var eingebaut = new Eingebaut(container, device, swfLocation, callback);
+    ```javascript
+    var eingebaut = new Eingebaut(container, device, swfLocation, callback);
+    ```
 
 The simple example to start playing video might look like this:
 
+    ```html
     <div id=“video” style=“width:640px; height:360px”></div>
     <script>
       var eingebaut = new Eingebaut('#video', 'html5', ‘Eingebaut.swf', function(event){
@@ -26,6 +29,7 @@ The simple example to start playing video might look like this:
       eingebaut.setPoster(‘my-video-poster.jpg’);
       eingebaut.setPlaying(true);
     </script>
+    ```
 
 ### Boostrapping Eingebaut
 
