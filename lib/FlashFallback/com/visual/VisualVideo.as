@@ -189,7 +189,9 @@ package com.visual {
                 trace('Pseudo streaming from ' + this.pseudoStreamingOffset);
                 source = source; // switch source with new pseudo stream time
             } else {
-                this.video.seek(ct-this.pseudoStreamingOffset);
+                try {
+                    this.video.seek(ct-this.pseudoStreamingOffset);
+                }catch(e:Error){}
             }
         }
         public function get currentTime():Number {
