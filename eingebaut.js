@@ -195,6 +195,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.getStalled = function() {
     if ($this.displayDevice=='html5') {
+      if($this.video.prop('ended')) return false;
       return $this.video[0].readyState<3 && $this.video[0].readyState>0;
     } else {
       return $this.video.prop('stalled');
