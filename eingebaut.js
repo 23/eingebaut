@@ -17,7 +17,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
 
   // The callback
   $this.callback = function(e){
-    console.log('callback', e);
     if($this.switching && (e=='canplay'||e=='play')) $this.switching = false;
     $this._callback(e);
   };
@@ -95,7 +94,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           return (typeof(value)!='undefined' ? $this.video.call('set' + key, value, param): $this.video.call('get' + key));
         },
         call:function(method,arg1,arg2){
-          console.log('call', method,arg1,arg2);
           $this.video.element = document['FlashFallback']||window['FlashFallback'];
           if($this.video.element) {
             if(typeof(arg2)!='undefined') {
