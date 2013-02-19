@@ -94,6 +94,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           return (typeof(value)!='undefined' ? $this.video.call('set' + key, value, param): $this.video.call('get' + key));
         },
         call:function(method,arg1,arg2){
+          console.log('call', method,arg1,arg2);
+          $this.video.element = document['FlashFallback']||window['FlashFallback'];
           if($this.video.element) {
             if(typeof(arg2)!='undefined') {
               return $this.video.element[method](arg1,arg2);
@@ -103,7 +105,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
               return $this.video.element[method]();
             }
           } else {
-            $this.video.element = document['FlashFallback']||window['FlashFallback'];
             if($this.video.element) {
               // Run queue
               $.each($this.video.queue, function(i,q){
