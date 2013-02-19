@@ -9,7 +9,9 @@ package {
     private var video:VisualVideo;
     
     private function trace(s:String):void {
-      ExternalInterface.call("console.log", "FlashFallback", s);
+      try {
+        ExternalInterface.call("console.log", "FlashFallback", s);
+      }catch(e:Error){}
     }
     public function FlashFallback() {
       stage.scaleMode = 'noScale'; //StageScaleMode.NO_SCALE
