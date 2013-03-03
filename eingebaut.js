@@ -39,17 +39,17 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
-            if($this.video.prop('seekable').length>0 && _startTime>0) {
-                try {
-                    // The iPad implementation of this seems to have a weird deficiency where setting currentTime is not allowed
-                    // on the DOM object immediately after the video is seekable. Catching the error here will simply rerun the 
-                    // attemp over an over again for every even -- until it works and _startTime is reset.
-                    $this.video[0].currentTime = _startTime;
-                    _startTime = 0;
-                }catch(e){}
-            }
-            $this.callback(e.type);
-          });
+          if($this.video.prop('seekable').length>0 && _startTime>0) {
+            try {
+              // The iPad implementation of this seems to have a weird deficiency where setting currentTime is not allowed
+              // on the DOM object immediately after the video is seekable. Catching the error here will simply rerun the 
+              // attemp over an over again for every even -- until it works and _startTime is reset.
+              $this.video[0].currentTime = _startTime;
+              _startTime = 0;
+            }catch(e){}
+          }
+          $this.callback(e.type);
+        });
 
       // Hide the standard Chrome on iPhone
       if(!$this.allowHiddenControls()) $this.video.css({width:1,height:1});
@@ -79,7 +79,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           $this.callback(e);
         }
       };
-            
+      
       // Emulate enough of the jQuery <video> object for our purposes
       $this.video = {
         queue:[],
@@ -107,8 +107,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
             if($this.video.element) {
               // Run queue
               $.each($this.video.queue, function(i,q){
-                  $this.video.call(q[0],q[1],q[2]);
-                });
+                $this.video.call(q[0],q[1],q[2]);
+              });
               $this.video.queue = [];
               // Run the calling method
               $this.video.call(method,arg1,arg2);
@@ -231,101 +231,119 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // iPhone in particular doesn't allow controls in <video> to be hidden entirely, meaning that we
   // shouldn't show the <video> element, but instead a thumbnail, when the video is paused.
   $this.allowHiddenControls = function() {
-      if ($this.displayDevice=='html5'&&/iPhone/.test(navigator.userAgent)) {
-          return false;
-      } else {
-          return true;
-      }
+    if ($this.displayDevice=='html5'&&/iPhone/.test(navigator.userAgent)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   // HTML5 fullscreen for either the full document or the video itself (depending on the value of $this.fullscreenContext, default is 'document')
   $this.hasFullscreen = function() {
-      if ($this.displayDevice!='html5') return false;
-      try {
-          if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
-      }catch(e){}
-      
-      // First fullscreen mode: Full document, including all UI
-      if($this.fullscreenContext=='document') {
-          var de = document.documentElement;
-          if(de.requestFullScreen&&document.fullScreenEnabled) return true;
-          if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
-          if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
-      }
-      // Second fullscreen mode: Only the video element, relavant mostly for iPad
-      if($this.fullscreenContext=='video' || /iPad/.test(navigator.userAgent)) {
-          var ve = $this.video[0];
-          if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
-      }
+    if ($this.displayDevice=='flash') return true;
+    if ($this.displayDevice=='none') return false;
 
-      return false;
+    // HTML5 testing
+    try {
+      if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
+    }catch(e){}
+    
+    // First fullscreen mode: Full document, including all UI
+    if($this.fullscreenContext=='document') {
+      var de = document.documentElement;
+      if(de.requestFullScreen&&document.fullScreenEnabled) return true;
+      if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
+      if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
+    }
+    // Second fullscreen mode: Only the video element, relavant mostly for iPad
+    if($this.fullscreenContext=='video' || /iPad/.test(navigator.userAgent)) {
+      var ve = $this.video[0];
+      if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
+    }
+
+    return false;
   };
   $this.switchedToFullscreen = false;
   $this.isFullscreen = function() {
-      if ($this.displayDevice!='html5') return false;
+    if ($this.displayDevice=='flash') {
+      return $this.video.prop('isFullscreen');
+    } else {
       return $this.switchedToFullscreen;
-      //if($this.video[0].mozFullScreen) return $this.video[0].mozFullScreen();
-      //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
-      //return false;
+    }
+    //if($this.video[0].mozFullScreen) return $this.video[0].mozFullScreen();
+    //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
+    //return false;
   };
   $this.enterFullscreen = function() {
-      if ($this.displayDevice!='html5') return false;
+    if ($this.displayDevice=='flash') {
+      return $this.video.call('enterFullscreen');
+    }
+
+    if ($this.displayDevice=='html5') {
       var de = document.documentElement;
       var ve = $this.video[0];
       if($this.fullscreenContext=='document' && de.requestFullScreen) {
-          de.requestFullScreen();
+        de.requestFullScreen();
       } else if($this.fullscreenContext=='document' && de.mozRequestFullScreen) {
-          de.mozRequestFullScreen();
+        de.mozRequestFullScreen();
       } else if($this.fullscreenContext=='document' && de.webkitRequestFullScreen) {
-          de.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        de.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
       } else if(ve.webkitEnterFullscreen) {
-          $this.setPlaying(true);
-          ve.webkitEnterFullscreen();
+        $this.setPlaying(true);
+        ve.webkitEnterFullscreen();
       } else if(ve.mozRequestFullScreen) {
-          $this.setPlaying(true);
-          ve.mozRequestFullScreen();
+        $this.setPlaying(true);
+        ve.mozRequestFullScreen();
       } else {
-          $this.switchedToFullscreen = false;
-          return false;
+        $this.switchedToFullscreen = false;
+        return false;
       }
+      $this.callback('enterfullscreen');
       $this.switchedToFullscreen = true;
       return true;
+    }
   };
   $this.leaveFullscreen = function() {
-      if ($this.displayDevice!='html5') return false;
+    if ($this.displayDevice=='flash') {
+      return $this.video.call('enterFullscreen');
+    }
+
+    if ($this.displayDevice=='html5') {
       $this.switchedToFullscreen = false;
       var ve = $this.video[0];
       if(document.cancelFullScreen) {
-          document.cancelFullScreen();
+        document.cancelFullScreen();
       } else if(document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
+        document.mozCancelFullScreen();
       } else if(document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen();
+        document.webkitCancelFullScreen();
       }else if(ve.webkitCancelFullscreen) {
-          ve.webkitCancelFullscreen();
+        ve.webkitCancelFullscreen();
       } else if(ve.mozCancelFullScreen) {
-          ve.mozCancelFullScreen();
+        ve.mozCancelFullScreen();
       } else {
-          return false;
+        return false;
       }
+      $this.callback('leavefullscreen');
       return true;
+    }
   };
 
   // We will test whether volume changing is support on load an fire a `volumechange` event
   var _supportsVolumeChange = false; 
   $this.supportsVolumeChange = function(){
-      if(_supportsVolumeChange) return true;
-      if($this.displayDevice!='html5') {
-          _supportsVolumeChange = true;
-      } else {
-          // functional test of volume on html5 devices (iPad, iPhone as the real target)
-          var v = document.createElement('video');
-          v.volume = .5;
-          _supportsVolumeChange = (v.volume==.5);
-          v = null;
-      }
-      $this.callback('volumechange');
-      return _supportsVolumeChange;
+    if(_supportsVolumeChange) return true;
+    if($this.displayDevice!='html5') {
+      _supportsVolumeChange = true;
+    } else {
+      // functional test of volume on html5 devices (iPad, iPhone as the real target)
+      var v = document.createElement('video');
+      v.volume = .5;
+      _supportsVolumeChange = (v.volume==.5);
+      v = null;
+    }
+    $this.callback('volumechange');
+    return _supportsVolumeChange;
   };
   
   /* LOAD! */

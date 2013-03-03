@@ -93,6 +93,10 @@ Flash/OSMF (`displayDevice="flash"`) will play:
 * `loadedmetadata`: The display device loaded meta data on the video.
 * `ended`: The video has been played to its end.
 * `volumechange` : The volume has been changed.
+* `enterfullscreen` : The player has entered fullscreen
+* `leavefullscreen` : The player has exited fullscreen
+* `fullscreenprompt` : The `flash` display device is displaying a Flash-native popup prompting for click to enter fullscreen.
+* `clearfullscreenprompt` : The Flash-native popup prompting for click to enter fullscreen has been cleared.
 
 # Dependencies and Supported Browsers/Devices
 
