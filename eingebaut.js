@@ -35,10 +35,13 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       }
 
       // HTML5 Display
+      $this.stalled = false;
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
+          if(e.type=='stalled'||e.type=='waiting') $this.stalled = true;
+          if(e.type=='playing') $this.stalled = false;
           if($this.video.prop('seekable').length>0 && _startTime>0) {
             try {
               // The iPad implementation of this seems to have a weird deficiency where setting currentTime is not allowed
@@ -194,7 +197,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.getStalled = function() {
     if ($this.displayDevice=='html5') {
       if($this.video.prop('ended')) return false;
-      return $this.video[0].readyState<3 && $this.video[0].readyState>0;
+      return $this.stalled && !$this.video[0].paused;
     } else {
       return $this.video.prop('stalled');
     }
