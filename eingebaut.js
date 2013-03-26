@@ -40,7 +40,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
         .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
-          if(e.type=='stalled'||e.type=='waiting') $this.stalled = true;
+          if(e.type=='waiting') $this.stalled = true;
           if(e.type=='playing') $this.stalled = false;
           if($this.video.prop('seekable').length>0 && _startTime>0) {
             try {
