@@ -39,7 +39,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
-        .bind('loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
+        .bind('load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
           if(e.type=='waiting') $this.stalled = true;
           if(e.type=='playing') $this.stalled = false;
           if($this.video.prop('seekable').length>0 && _startTime>0) {
@@ -234,7 +234,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // iPhone in particular doesn't allow controls in <video> to be hidden entirely, meaning that we
   // shouldn't show the <video> element, but instead a thumbnail, when the video is paused.
   $this.allowHiddenControls = function() {
-    if ($this.displayDevice=='html5'&&/iPhone/.test(navigator.userAgent)) {
+    if ($this.displayDevice=='html5'&&/(iPhone|iPod)/.test(navigator.userAgent)) {
       return false;
     } else {
       return true;
