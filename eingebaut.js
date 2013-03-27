@@ -203,7 +203,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     }
   };
   $this.getDuration = function() {
-    return $this.video.prop('duration');
+    try {
+      return $this.video.prop('duration');
+    }catch(e){return 0;}
   };
   $this.getBufferTime = function() {
     if ($this.displayDevice=='html5') {
