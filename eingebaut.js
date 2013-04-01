@@ -36,10 +36,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
 
       // HTML5 Display
       $this.stalled = false;
+      $this.progressFired = false;
+      $this.loadedFired = false;
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
-        .bind('load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange', function(e){
+        .bind('load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough', function(e){
+          if(e.type=='progress') $this.progressFired = true; // In some cases, iOS fails to preload content correctly; the progress event indicates that load was done
+          if(e.type=='loaded') $this.loadedFired = true; // In some cases, iOS fails to preload content correctly; the progress event indicates that load was done
           if(e.type=='waiting') $this.stalled = true;
           if(e.type=='playing') $this.stalled = false;
           if($this.video.prop('seekable').length>0 && _startTime>0) {
@@ -162,7 +166,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.setPlaying = function(playing) {
     if (playing) {
-      $this.video[0].preload = 'preload';
+      if($this.displayDevice=='html5' && !$this.progressFired && $this.loadedFired) {
+        // In a few weird cases, iOS fails to preload content correctly; when this fails, try re-setting the source
+        $this.setSource($this.getSource()); 
+      }
       $this.video[0].play();
     } else {
       $this.video[0].pause();
@@ -180,6 +187,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.setCurrentTime = function(currentTime) {
     if($this.displayDevice=='html5'&&$this.video[0].readyState<3) _startTime = currentTime;
     try {      
+      var currentTime = +(currentTime).toFixed(1); // round off the number due to bug in iOS 3.2
       $this.video.prop('currentTime', Math.max(0,currentTime||0));
     }catch(e){}
   };
