@@ -80,6 +80,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       
       // Flash Display
       window.FlashFallbackCallback = function(e){
+        if(e=='fullscreenprompt') $this.blind.hide();
+        if(e=='clearfullscreenprompt') $this.blind.show();
         if(e=='flashloaded'&&!$this.ready) {
           $this.ready = true;
           $this.callback('flashloaded');
@@ -248,7 +250,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // iPhone in particular doesn't allow controls in <video> to be hidden entirely, meaning that we
   // shouldn't show the <video> element, but instead a thumbnail, when the video is paused.
   $this.allowHiddenControls = function() {
-    if ($this.displayDevice=='html5'&&/(iPhone|iPod)/.test(navigator.userAgent)) {
+    if ($this.displayDevice=='html5'&&/(iPhone|iPod|Windows.Phone)/.test(navigator.userAgent)) {
       return false;
     } else {
       return true;
@@ -322,7 +324,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.leaveFullscreen = function() {
     if ($this.displayDevice=='flash') {
-      return $this.video.call('enterFullscreen');
+      return $this.video.call('leaveFullscreen');
     }
 
     if ($this.displayDevice=='html5') {
