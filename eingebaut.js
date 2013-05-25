@@ -162,7 +162,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     if ($this.displayDevice=='html5') {
       // This is required when $this.allowHiddenControls() is true, but also fixes a bug where Chrome wasn't 
       // showing the native poster image within its <video> tag.
-      $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
+      ($this.allowHiddenControls() ? $this.video : $this.container).css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
     }
     $this.video.prop('poster', poster);
   };
@@ -175,6 +175,13 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if($this.displayDevice=='html5' && /(iPhone|iPod|iPad)/.test(navigator.userAgent) && !$this.progressFired && $this.loadedFired) {
         // In a few weird cases, iOS fails to preload content correctly; when this fails, try re-setting the source
         $this.setSource($this.getSource()); 
+      }
+      // Android's standard internet browser (aptly called Internet) doesn't works too well with poster
+      // So we use the trick of showing an image thumbnail and then scaling up the video device on play
+      // This only covers a subset of the problem, but at least approaches it.
+      // (This is not the case for Chrome on Android, which is pretty perfect.)
+      if($this.displayDevice=='html5' && !$this.allowHiddenControls() && /Android/.test(navigator.userAgent)) {
+        $this.video.css({width:'100%',height:'100%'});
       }
       $this.video[0].play();
     } else {
@@ -252,6 +259,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.allowHiddenControls = function() {
     if ($this.displayDevice=='html5'&&/(iPhone|iPod|Windows.Phone)/.test(navigator.userAgent)) {
       return false;
+    } else if ($this.displayDevice=='html5'&&/Android/.test(navigator.userAgent)&&!/Chrome/.test(navigator.userAgent)) {
+      return false;
     } else {
       return true;
     }
@@ -306,7 +315,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       } else if($this.fullscreenContext=='document' && de.mozRequestFullScreen) {
         de.mozRequestFullScreen();
       } else if($this.fullscreenContext=='document' && de.webkitRequestFullScreen) {
-        de.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        if(/Safari/.test(navigator.userAgent)) {
+          de.webkitRequestFullScreen();
+        } else {
+          de.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
       } else if(ve.webkitEnterFullscreen) {
         $this.setPlaying(true);
         ve.webkitEnterFullscreen();
