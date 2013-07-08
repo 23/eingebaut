@@ -15,7 +15,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // This is also handled in Flash, so since browser up to and including IE8 
   // don't support `background-size`, these are excluded entirely
   if(navigator.appName != 'Microsoft Internet Explorer' || !/MSIE ([0-8]{1,}[\.0-8]{0,})/.test(navigator.userAgent)) {
-    alert('floating poster');
     $this.floatingPoster = $(document.createElement('div'))
       .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'}).hide();
     $this.container.append($this.floatingPoster);
