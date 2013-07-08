@@ -9,15 +9,40 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.fullscreenContext = 'document'; // can be overwritten to 'video' if you prefer only the video to be in full screen, not the entire document
   $this.ready = false;
   $this.switching = false;
+  $this.showPosterOnEnd = false;
+
+  // A floating poster, to be shown on top of the video in some cases
+  // This is also handled in Flash, so since browser up to and including IE8 
+  // don't support `background-size`, these are excluded entirely
+  if(navigator.appName != 'Microsoft Internet Explorer' || !/MSIE ([0-8]{1,}[\.0-8]{0,})/.test(navigator.userAgent)) {
+    alert('floating poster');
+    $this.floatingPoster = $(document.createElement('div'))
+      .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'}).hide();
+    $this.container.append($this.floatingPoster);
+  }
 
   // Blind for click and overlay (1x1px transparent gif to force layout in IE8)
   $this.blind = $(document.createElement('div'))
     .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundImage:'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==)'});
-  $this.container.append($this.blind);
-
+  $this.container.append($this.blind);  
+  
   // The callback
   $this.callback = function(e){
     if($this.switching && (e=='canplay'||e=='play')) $this.switching = false;
+    
+    // Handle floating poster, mostly compensating for Chrome not always showing the video poster
+    // but also enabling a mode where the thumbnail is displayed when the video ends
+    switch(e) {
+      case 'play':
+      case 'playing':
+      case 'progress':
+        if($this.floatingPoster) $this.floatingPoster.hide();
+        break;
+      case 'ended':
+        if($this.floatingPoster&&$this.showPosterOnEnd) $this.floatingPoster.show();
+        break;
+    }
+    
     $this._callback(e);
   };
 
@@ -27,10 +52,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     $this.displayDevice = displayDevice;
     if ($this.displayDevice=='html5') {
       if(/MSIE/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
-        // Internet Explorer 10 does support HTML5 video, but with a number of caveat. 
+        // Internet Explorer 10 does support HTML5 video, but with a number of caveats. 
         // There are notable bugs in the playback quality. And support for Byte-Range 
         // scrubbing is non-existant. Here, we simply opt out and fall back to Flash, 
-        // even is this may seem like a crude compromise.
+        // even is this may seem like a crude compromise. Windows Phone playback is 
+        // supported though.
         return false;
       }
 
@@ -159,10 +185,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     return $this.video.prop('src')||'';
   };
   $this.setPoster = function(poster) {
-    if ($this.displayDevice=='html5') {
-      // This is required when $this.allowHiddenControls() is true, but also fixes a bug where Chrome wasn't 
-      // showing the native poster image within its <video> tag.
-      ($this.allowHiddenControls() ? $this.video : $this.container).css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
+    if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'});
+    if ($this.displayDevice=='html5' && !$this.allowHiddenControls()) {
+      $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
     }
     $this.video.prop('poster', poster);
   };
