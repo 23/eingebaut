@@ -12,7 +12,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.showPosterOnEnd = false;
 
   // A floating poster, to be shown on top of the video in some cases
-  // This is also handled in Flash, so since browser up to and including IE8 
+  // This is also handled in Flash, so since browser up to and including IE8
   // don't support `background-size`, these are excluded entirely
   if(navigator.appName != 'Microsoft Internet Explorer' || !/MSIE ([0-8]{1,}[\.0-8]{0,})/.test(navigator.userAgent)) {
     $this.floatingPoster = $(document.createElement('div'))
@@ -23,12 +23,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // Blind for click and overlay (1x1px transparent gif to force layout in IE8)
   $this.blind = $(document.createElement('div'))
     .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundImage:'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==)'});
-  $this.container.append($this.blind);  
-  
+  $this.container.append($this.blind);
+
   // The callback
   $this.callback = function(e){
     if($this.switching && (e=='canplay'||e=='play')) $this.switching = false;
-    
+
     // Handle floating poster, mostly compensating for Chrome not always showing the video poster
     // but also enabling a mode where the thumbnail is displayed when the video ends
     switch(e) {
@@ -41,7 +41,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         if($this.floatingPoster&&$this.showPosterOnEnd) $this.floatingPoster.show();
         break;
     }
-    
+
     $this._callback(e);
   };
 
@@ -51,10 +51,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     $this.displayDevice = displayDevice;
     if ($this.displayDevice=='html5') {
       if(/MSIE/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
-        // Internet Explorer 10 does support HTML5 video, but with a number of caveats. 
-        // There are notable bugs in the playback quality. And support for Byte-Range 
-        // scrubbing is non-existant. Here, we simply opt out and fall back to Flash, 
-        // even is this may seem like a crude compromise. Windows Phone playback is 
+        // Internet Explorer 10 does support HTML5 video, but with a number of caveats.
+        // There are notable bugs in the playback quality. And support for Byte-Range
+        // scrubbing is non-existant. Here, we simply opt out and fall back to Flash,
+        // even is this may seem like a crude compromise. Windows Phone playback is
         // supported though.
         return false;
       }
@@ -65,19 +65,19 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.loadedFired = false;
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
-        .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})    
+        .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})
         .bind('load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough', function(e){
           // Handle stalled property (which is basically "waiting")
           if(e.type=='waiting') $this.stalled = true;
           if(e.type=='playing') $this.stalled = false;
           // In some cases, iOS fails to preload content correctly; the progress event indicates that load was done
-          if(e.type=='progress') $this.progressFired = true; 
+          if(e.type=='progress') $this.progressFired = true;
           if(e.type=='loaded') $this.loadedFired = true;
 
           if($this.video.prop('seekable').length>0 && _startTime>0) {
             try {
               // The iPad implementation of this seems to have a weird deficiency where setting currentTime is not allowed
-              // on the DOM object immediately after the video is seekable. Catching the error here will simply rerun the 
+              // on the DOM object immediately after the video is seekable. Catching the error here will simply rerun the
               // attemp over an over again for every even -- until it works and _startTime is reset.
               $this.video[0].currentTime = _startTime;
               _startTime = 0;
@@ -102,7 +102,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if(!swfobject.hasFlashPlayerVersion('10.1.0')) {
         return false;  // no flash support
       }
-      
+
       // Flash Display
       window.FlashFallbackCallback = function(e){
         if(e=='fullscreenprompt') $this.blind.hide();
@@ -116,7 +116,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           $this.callback(e);
         }
       };
-      
+
       // Emulate enough of the jQuery <video> object for our purposes
       $this.video = {
         queue:[],
@@ -135,7 +135,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           if($this.video.element) {
             if(typeof(arg2)!='undefined') {
               return $this.video.element[method](arg1,arg2);
-            } else if(typeof(arg1)!='undefined') { 
+            } else if(typeof(arg1)!='undefined') {
               return $this.video.element[method](arg1);
             } else {
               return $this.video.element[method]();
@@ -159,11 +159,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       };
 
       // Start the Flash application up using swfobject
-      // (if we should want to eliminate the swfobject dependency, that's doable: 
-      //  make a simple <object> include with innerHTML after the containing object has been 
+      // (if we should want to eliminate the swfobject dependency, that's doable:
+      //  make a simple <object> include with innerHTML after the containing object has been
       //  placed in DOM. Only caveat is that classid must be set in IE, and not in other browsers.)
       $this.container.prepend($(document.createElement('div')).attr({'id':'FlashFallback'}));
-      swfobject.embedSWF($this.swfLocation, 'FlashFallback', '100%', '100%', '10.1.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'}); 
+      swfobject.embedSWF($this.swfLocation, 'FlashFallback', '100%', '100%', '10.1.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'});
 
     }
     return true;
@@ -188,7 +188,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     if ($this.displayDevice=='html5' && !$this.allowHiddenControls()) {
       $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
     }
-    $this.video.prop('poster', poster);
+    window.setTimeout(function(){
+      try {
+        $this.video.prop('poster', poster);
+      } catch(){}
+    }, 1);
   };
   $this.getPoster = function() {
     return $this.video.prop('poster');
@@ -198,7 +202,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.video[0].preload = 'preload';
       if($this.displayDevice=='html5' && /(iPhone|iPod|iPad)/.test(navigator.userAgent) && !$this.progressFired && $this.loadedFired) {
         // In a few weird cases, iOS fails to preload content correctly; when this fails, try re-setting the source
-        $this.setSource($this.getSource()); 
+        $this.setSource($this.getSource());
       }
       // Android's standard internet browser (aptly called Internet) doesn't works too well with poster
       // So we use the trick of showing an image thumbnail and then scaling up the video device on play
@@ -223,7 +227,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.setCurrentTime = function(currentTime) {
     if($this.displayDevice=='html5'&&$this.video[0].readyState<3) _startTime = currentTime;
-    try {      
+    try {
       var currentTime = +(currentTime).toFixed(1); // round off the number due to bug in iOS 3.2+
       $this.video.prop('currentTime', Math.max(0,currentTime||0));
     }catch(e){}
@@ -299,7 +303,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     try {
       if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
     }catch(e){}
-    
+
     // First fullscreen mode: Full document, including all UI
     if($this.fullscreenContext=='document') {
       var de = document.documentElement;
@@ -386,7 +390,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
 
   // We will test whether volume changing is support on load an fire a `volumechange` event
-  var _supportsVolumeChange = false; 
+  var _supportsVolumeChange = false;
   $this.supportsVolumeChange = function(){
     if(_supportsVolumeChange) return true;
     if($this.displayDevice!='html5') {
@@ -401,7 +405,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     $this.callback('volumechange');
     return _supportsVolumeChange;
   };
-  
+
   /* LOAD! */
   $this.load = function(){
     if(!$this.loadDisplayDevice($this.displayDevice)) {
