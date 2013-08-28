@@ -191,7 +191,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     window.setTimeout(function(){
       try {
         $this.video.prop('poster', poster);
-      } catch(){}
+      }catch(e){}
     }, 1);
   };
   $this.getPoster = function() {
