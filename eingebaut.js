@@ -390,9 +390,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
 
   // We will test whether volume changing is support on load an fire a `volumechange` event
-  var _supportsVolumeChange = false;
+  var _supportsVolumeChange;
   $this.supportsVolumeChange = function(){
-    if(_supportsVolumeChange) return true;
+    if(typeof(_supportsVolumeChange) != 'undefined') return _supportsVolumeChange;
     if($this.displayDevice!='html5') {
       _supportsVolumeChange = true;
     } else {
