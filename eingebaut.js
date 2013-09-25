@@ -300,9 +300,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     if ($this.displayDevice=='none') return false;
 
     // HTML5 testing
-    try {
-      if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
-    }catch(e){}
+    //try {
+    //  if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
+    //}catch(e){}
 
     // First fullscreen mode: Full document, including all UI
     if($this.fullscreenContext=='document') {
