@@ -295,15 +295,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   }
 
   // HTML5 fullscreen for either the full document or the video itself (depending on the value of $this.fullscreenContext, default is 'document')
-  $this.hasFullscreen = function() {
-    if ($this.displayDevice=='flash') return true;
-    if ($this.displayDevice=='none') return false;
-
-    // HTML5 testing
-    //try {
-    //  if(window.frameElement && !window.frameElement.hasAttribute('allowFullScreen')) return(false);
-    //}catch(e){}
-
+  var _hasHTML5Fullscreen = function(){
     // First fullscreen mode: Full document, including all UI
     if($this.fullscreenContext=='document') {
       var de = document.documentElement;
@@ -316,12 +308,17 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       var ve = $this.video[0];
       if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
     }
-
+    return false;
+  };
+  $this.hasFullscreen = function() {
+    if (_hasHTML5Fullscreen()) return true;
+    if ($this.displayDevice=='flash') return true;
+    if ($this.displayDevice=='none') return false;
     return false;
   };
   $this.switchedToFullscreen = false;
   $this.isFullscreen = function() {
-    if ($this.displayDevice=='flash') {
+    if ($this.displayDevice=='flash' && !_hasHTML5Fullscreen()) {
       return $this.video.prop('isFullscreen');
     } else {
       return $this.switchedToFullscreen;
@@ -331,11 +328,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     //return false;
   };
   $this.enterFullscreen = function() {
-    if ($this.displayDevice=='flash') {
-      return $this.video.call('enterFullscreen');
-    }
-
-    if ($this.displayDevice=='html5') {
+    if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
       var de = document.documentElement;
       var ve = $this.video[0];
       if($this.fullscreenContext=='document' && de.requestFullScreen) {
@@ -362,13 +355,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.switchedToFullscreen = true;
       return true;
     }
+    if ($this.displayDevice=='flash') {
+      return $this.video.call('enterFullscreen');
+    }
   };
   $this.leaveFullscreen = function() {
-    if ($this.displayDevice=='flash') {
-      return $this.video.call('leaveFullscreen');
-    }
-
-    if ($this.displayDevice=='html5') {
+    if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
       $this.switchedToFullscreen = false;
       var ve = $this.video[0];
       if(document.cancelFullScreen) {
@@ -377,7 +369,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         document.mozCancelFullScreen();
       } else if(document.webkitCancelFullScreen) {
         document.webkitCancelFullScreen();
-      }else if(ve.webkitCancelFullscreen) {
+      } else if(ve.webkitCancelFullscreen) {
         ve.webkitCancelFullscreen();
       } else if(ve.mozCancelFullScreen) {
         ve.mozCancelFullScreen();
@@ -386,6 +378,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       }
       $this.callback('leavefullscreen');
       return true;
+    }
+    if ($this.displayDevice=='flash') {
+      return $this.video.call('leaveFullscreen');
     }
   };
 
