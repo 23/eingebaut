@@ -304,7 +304,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
     }
     // Second fullscreen mode: Only the video element, relavant mostly for iPad
-    if($this.fullscreenContext=='video' || /iPad/.test(navigator.userAgent)) {
+    if($this.fullscreenContext=='video' || /iPad|iPhone/.test(navigator.userAgent)) {
       var ve = $this.video[0];
       if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
     }
