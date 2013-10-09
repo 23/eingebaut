@@ -206,7 +206,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.setPlaying = function(playing) {
     if (playing) {
       $this.video[0].preload = 'preload';
-      if($this.displayDevice=='html5' && /(iPhone|iPod|iPad)/.test(navigator.userAgent) && !$this.progressFired && $this.loadedFired) {
+      if($this.displayDevice=='html5' && /(iPhone|iPod|iPad)/.test(navigator.userAgent) && !$this.progressFired) {
         // In a few weird cases, iOS fails to preload content correctly; when this fails, try re-setting the source
         $this.setSource($this.getSource());
       }
