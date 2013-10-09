@@ -40,6 +40,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       case 'ended':
         if($this.floatingPoster&&$this.showPosterOnEnd) $this.floatingPoster.show();
         break;
+      case 'leavefullscreen':
+      case 'enterfullscreen':
+        $this.callback('fullscreenchange');
+        break;
     }
 
     $this._callback(e);
@@ -66,13 +70,15 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.video = $(document.createElement('video'))
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})
-        .bind('load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough', function(e){
+        .bind('load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough webkitbeginfullscreen webkitendfullscreen', function(e){
           // Handle stalled property (which is basically "waiting")
           if(e.type=='waiting') $this.stalled = true;
           if(e.type=='playing') $this.stalled = false;
           // In some cases, iOS fails to preload content correctly; the progress event indicates that load was done
           if(e.type=='progress') $this.progressFired = true;
           if(e.type=='loaded') $this.loadedFired = true;
+          if(e.type=='webkitbeginfullscreen') $this.callback("enterfullscreen");
+          if(e.type=='webkitendfullscreen') $this.callback("leavefullscreen");
 
           if($this.video.prop('seekable').length>0 && _startTime>0) {
             try {
@@ -316,17 +322,25 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     if ($this.displayDevice=='none') return false;
     return false;
   };
-  $this.switchedToFullscreen = false;
   $this.isFullscreen = function() {
     if ($this.displayDevice=='flash' && !_hasHTML5Fullscreen()) {
       return $this.video.prop('isFullscreen');
     } else {
-      return $this.switchedToFullscreen;
+      ve = $this.video[0];
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || ve.webkitDisplayingFullscreen) {
+        return true;
+      } else {
+        return false;
+      }
     }
     //if($this.video[0].mozFullScreen) return $this.video[0].mozFullScreen();
     //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
     //return false;
   };
+  $(document).bind("fullscreenchange mozfullscreenchange webkitfullscreenchange", function(e){
+    var cb = $this.isFullscreen() ? "enterfullscreen" : "leavefullscreen";
+    $this.callback(cb);
+  });
   $this.enterFullscreen = function() {
     if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
       var de = document.documentElement;
@@ -348,11 +362,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         $this.setPlaying(true);
         ve.mozRequestFullScreen();
       } else {
-        $this.switchedToFullscreen = false;
         return false;
       }
-      $this.callback('enterfullscreen');
-      $this.switchedToFullscreen = true;
       return true;
     }
     if ($this.displayDevice=='flash') {
@@ -361,7 +372,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.leaveFullscreen = function() {
     if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
-      $this.switchedToFullscreen = false;
       var ve = $this.video[0];
       if(document.cancelFullScreen) {
         document.cancelFullScreen();
@@ -376,7 +386,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       } else {
         return false;
       }
-      $this.callback('leavefullscreen');
       return true;
     }
     if ($this.displayDevice=='flash') {
