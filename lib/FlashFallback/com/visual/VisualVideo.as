@@ -12,8 +12,11 @@ package com.visual {
     import org.osmf.media.MediaElement;
     import org.osmf.utils.OSMFSettings;
     import org.osmf.events.LoadEvent;
+    import org.osmf.events.MediaElementEvent;
     import org.osmf.layout.LayoutMetadata;
     import org.osmf.layout.ScaleMode;
+    import org.osmf.traits.DisplayObjectTrait;
+    import org.osmf.traits.MediaTraitType;
 
     public class VisualVideo extends Sprite {
         // Create the container classes to displays media. 
@@ -82,11 +85,23 @@ package com.visual {
   	    var resource:URLResource = new URLResource(pseudoSource);
             video = videoContainer.mediaPlayer;
             video.autoPlay = isPlaying||queuePlay;
+            video.bufferTime = (isLive ? 0.1 : 1);
             queuePlay = false;
             video.autoRewind = false;
             videoContainer.resource = new URLResource(pseudoSource);
             videoContainer.media.addMetadata(LayoutMetadata.LAYOUT_NAMESPACE, layout);
+
+            // Smoothing with OSMF isn't supposed to be easy. We'll try two different things...
+            // 1st case
             if (videoContainer.media is VideoElement) (videoContainer.media as VideoElement).smoothing = true;
+            // 2nd case
+            videoContainer.media.addEventListener(MediaElementEvent.TRAIT_ADD, function(event:MediaElementEvent):void {
+              if(event.type == MediaElementEvent.TRAIT_ADD && event.traitType == MediaTraitType.DISPLAY_OBJECT) {
+                var displayObject:Object = (videoContainer.media.getTrait(MediaTraitType.DISPLAY_OBJECT) as DisplayObjectTrait).displayObject;
+                displayObject.smoothing = true;
+              }
+            });
+
             matchVideoSize();
 
             if(!this.attachedEvents) {
@@ -150,6 +165,7 @@ package com.visual {
                 if(p) {
                     if(this.videoEnded) this.currentTime = 0;
                     this.video.play();
+                    callback('play');
                 } else {
                     this.video.pause();
                 }
