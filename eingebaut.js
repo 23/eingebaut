@@ -305,7 +305,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     // First fullscreen mode: Full document, including all UI
     if($this.fullscreenContext=='document') {
       var de = document.documentElement;
-      if(de.requestFullScreen&&document.fullScreenEnabled) return true;
+      if(de.requestFullscreen&&document.fullscreenEnabled) return true;
       if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
       if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
     }
@@ -345,8 +345,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
       var de = document.documentElement;
       var ve = $this.video[0];
-      if($this.fullscreenContext=='document' && de.requestFullScreen) {
-        de.requestFullScreen();
+      if($this.fullscreenContext=='document' && de.requestFullscreen) {
+        de.requestFullscreen();
       } else if($this.fullscreenContext=='document' && de.mozRequestFullScreen) {
         de.mozRequestFullScreen();
       } else if($this.fullscreenContext=='document' && de.webkitRequestFullScreen) {
@@ -373,8 +373,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.leaveFullscreen = function() {
     if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
       var ve = $this.video[0];
-      if(document.cancelFullScreen) {
-        document.cancelFullScreen();
+      if(document.exitFullscreen) {
+        document.exitFullscreen();
       } else if(document.mozCancelFullScreen) {
         document.mozCancelFullScreen();
       } else if(document.webkitCancelFullScreen) {
