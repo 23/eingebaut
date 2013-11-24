@@ -109,6 +109,13 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         return false;  // no flash support
       }
 
+      // Flash's ExternalInterface is know to exhibit issues with security modes in Safari 6.1
+      // In these case, we want to force display device to be HTML5, even when Flash is available.
+      try {
+        var m = navigator.appVersion.match(/Version\/(\d+.\d+) Safari/);
+        if(m && parseFloat(m[1])>=6.1) return false;
+      }catch(e){}
+
       // Flash Display
       window.FlashFallbackCallback = function(e){
         if(e=='fullscreenprompt') $this.blind.hide();
@@ -178,6 +185,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   /* METHODS */
   _startTime = 0;
   $this.setSource = function(source, startTime) {
+    console.debug('eingebaut.setSource', source);
     $this.switching = true;
     if ($this.displayDevice=='html5') {
       $this.video.prop('src', source);
