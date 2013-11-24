@@ -77,12 +77,12 @@ package com.visual {
             if(this.pseudoStreamingOffset==0) {
                 pseudoSource = _source;
             } else {
-                pseudoSource = _source + (_source.match(new RegExp("\?")) ? '&' : '?') + 'start=' + this.pseudoStreamingOffset;
+                pseudoSource = _source + (new RegExp("\\?").test(_source) ? '&' : '?') + 'start=' + this.pseudoStreamingOffset;
             }
             _duration = 0;
 
             // Load the stream and attach to playback
-  	    var resource:URLResource = new URLResource(pseudoSource);
+            var resource:URLResource = new URLResource(pseudoSource);
             video = videoContainer.mediaPlayer;
             video.autoPlay = isPlaying||queuePlay;
             video.bufferTime = (isLive ? 0.1 : 1);
