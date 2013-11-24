@@ -185,7 +185,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   /* METHODS */
   _startTime = 0;
   $this.setSource = function(source, startTime) {
-    console.debug('eingebaut.setSource', source);
     $this.switching = true;
     if ($this.displayDevice=='html5') {
       $this.video.prop('src', source);
