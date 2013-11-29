@@ -308,11 +308,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if(de.requestFullscreen&&document.fullscreenEnabled) return true;
       if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
       if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
+      if(de.msRequestFullscreen&&document.msFullscreenEnabled) return true;
     }
     // Second fullscreen mode: Only the video element, relavant mostly for iPad
     if($this.fullscreenContext=='video' || /iPad|iPhone/.test(navigator.userAgent)) {
       var ve = $this.video[0];
-      if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
+      if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen||ve.msRequestFullscreen) return true;
     }
     return false;
   };
@@ -327,7 +328,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       return $this.video.prop('isFullscreen');
     } else {
       ve = $this.video[0];
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || ve.webkitDisplayingFullscreen) {
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || ve.webkitDisplayingFullscreen || document.msFullscreenElement) {
         return true;
       } else {
         return false;
@@ -337,7 +338,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
     //return false;
   };
-  $(document).bind("fullscreenchange mozfullscreenchange webkitfullscreenchange", function(e){
+  $(document).bind("fullscreenchange mozfullscreenchange webkitfullscreenchange MSFullscreenChange", function(e){
     var cb = $this.isFullscreen() ? "enterfullscreen" : "leavefullscreen";
     $this.callback(cb);
   });
@@ -355,12 +356,17 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         } else {
           de.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
         }
+      } else if($this.fullscreenContext=='document' && de.msRequestFullscreen) {
+        de.msRequestFullscreen();
       } else if(ve.webkitEnterFullscreen) {
         $this.setPlaying(true);
         ve.webkitEnterFullscreen();
       } else if(ve.mozRequestFullScreen) {
         $this.setPlaying(true);
         ve.mozRequestFullScreen();
+      } else if(ve.msRequestFullscreen) {
+        $this.setPlaying(true);
+        ve.msRequestFullscreen();
       } else {
         return false;
       }
@@ -383,6 +389,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         ve.webkitCancelFullscreen();
       } else if(ve.mozCancelFullScreen) {
         ve.mozCancelFullScreen();
+      } else if(document.msExitFullscreen) {
+        document.msExitFullscreen();
       } else {
         return false;
       }
