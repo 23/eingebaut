@@ -266,7 +266,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.getDuration = function() {
     try {
-      return $this.video.prop('duration');
+      return Math.max($this.video.prop('duration'),$this.getCurrentTime());
     }catch(e){return 0;}
   };
   $this.getBufferTime = function() {
