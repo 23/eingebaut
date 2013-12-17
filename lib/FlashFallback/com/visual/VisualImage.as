@@ -36,6 +36,10 @@ package com.visual {
     }
     
     private function onLoadingComplete(e:Event):void {
+      if (image) {
+        this.removeChild(image);
+	image = null;
+      }
       image = Bitmap(loader.content);
       image.smoothing=true;
       this.addChild(image);
