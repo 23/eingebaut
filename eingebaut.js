@@ -28,7 +28,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // The callback
   $this.callback = function(e){
     if($this.switching && (e=='canplay'||e=='play')) $this.switching = false;
-
     // Handle floating poster, mostly compensating for Chrome not always showing the video poster
     // but also enabling a mode where the thumbnail is displayed when the video ends
     switch(e) {
@@ -54,7 +53,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.loadDisplayDevice = function(displayDevice){
     $this.displayDevice = displayDevice;
     if ($this.displayDevice=='html5') {
-      if(/MSIE/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
+      if(/MSIE ([6-9]|10)/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
         // Internet Explorer 10 does support HTML5 video, but with a number of caveats.
         // There are notable bugs in the playback quality. And support for Byte-Range
         // scrubbing is non-existant. Here, we simply opt out and fall back to Flash,
@@ -73,7 +72,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         .bind('load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough webkitbeginfullscreen webkitendfullscreen', function(e){
           // Handle stalled property (which is basically "waiting")
           if(e.type=='waiting') $this.stalled = true;
-          if(e.type=='playing') $this.stalled = false;
+          if(e.type=='playing'||e.type=='seeked') $this.stalled = false;
           // In some cases, iOS fails to preload content correctly; the progress event indicates that load was done
           if(e.type=='progress') $this.progressFired = true;
           if(e.type=='loaded') $this.loadedFired = true;
@@ -321,11 +320,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if(de.requestFullScreen&&document.fullScreenEnabled) return true;
       if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
       if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
+      if(de.msRequestFullscreen&&document.msFullscreenEnabled) return true;
     }
     // Second fullscreen mode: Only the video element, relavant mostly for iPad
     if($this.fullscreenContext=='video' || /iPad|iPhone/.test(navigator.userAgent)) {
       var ve = $this.video[0];
-      if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen) return true;
+      if(ve.requestFullscreen||ve.webkitEnterFullscreen||ve.mozRequestFullScreen||ve.msRequestFullscreen) return true;
     }
     return false;
   };
@@ -340,7 +340,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       return $this.video.prop('isFullscreen');
     } else {
       ve = $this.video[0];
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || ve.webkitDisplayingFullscreen) {
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || ve.webkitDisplayingFullscreen) {
         return true;
       } else {
         return false;
@@ -350,7 +350,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
     //return false;
   };
-  $(document).bind("fullscreenchange mozfullscreenchange webkitfullscreenchange", function(e){
+  $(document).bind("fullscreenchange mozfullscreenchange webkitfullscreenchange MSFullscreenChange", function(e){
     var cb = $this.isFullscreen() ? "enterfullscreen" : "leavefullscreen";
     $this.callback(cb);
   });
@@ -368,12 +368,17 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         } else {
           de.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
         }
+      } else if($this.fullscreenContext=='document' && de.msRequestFullscreen) {
+        de.msRequestFullscreen();
       } else if(ve.webkitEnterFullscreen) {
         $this.setPlaying(true);
         ve.webkitEnterFullscreen();
       } else if(ve.mozRequestFullScreen) {
         $this.setPlaying(true);
         ve.mozRequestFullScreen();
+      } else if(ve.msRequestFullscreen) {
+        $this.setPlaying(true);
+        ve.msRequestFullscreen();
       } else {
         return false;
       }
@@ -392,10 +397,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         document.mozCancelFullScreen();
       } else if(document.webkitCancelFullScreen) {
         document.webkitCancelFullScreen();
+      } else if(document.msExitFullscreen) {
+        document.msExitFullscreen();
       } else if(ve.webkitCancelFullscreen) {
         ve.webkitCancelFullscreen();
       } else if(ve.mozCancelFullScreen) {
         ve.mozCancelFullScreen();
+      } else if(ve.msExitFullscreen) {
+        ve.msExitFullscreen();
       } else {
         return false;
       }
