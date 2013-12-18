@@ -198,14 +198,20 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.setPoster = function(poster) {
     if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'});
-    if ($this.displayDevice=='html5' && !$this.allowHiddenControls()) {
+    if ($this.displayDevice=='html5' && /Safari/.test(navigator.userAgent)) {
+      // Safari has buggy rendering of the poster image,
+      // when the video doesn't cover the entire video element.
+      // Here, we give the video element a transparent poster
+      // and set the real poster on the parent element instead.
+      $this.video.prop('poster', 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
       $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
+    }else{
+      window.setTimeout(function(){
+        try {
+          $this.video.prop('poster', poster);
+        }catch(e){}
+      }, 1);
     }
-    window.setTimeout(function(){
-      try {
-        $this.video.prop('poster', poster);
-      }catch(e){}
-    }, 1);
   };
   $this.getPoster = function() {
     return $this.video.prop('poster');
