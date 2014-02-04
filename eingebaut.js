@@ -183,6 +183,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
 
   /* METHODS */
   _startTime = 0;
+  $this.getStartTime = function(){
+    return _startTime;
+  };
   $this.setSource = function(source, startTime) {
     $this.switching = true;
     if ($this.displayDevice=='html5') {
