@@ -125,9 +125,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           $this.callback('ready');
           $this.supportsVolumeChange();
         } else {
-          window.setTimeout(function(){
-            $this.callback(e);
-          },5);
+          $this.callback(e);
         }
       };
 
