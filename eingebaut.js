@@ -322,7 +322,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       var de = document.documentElement;
       if(de.requestFullScreen&&document.fullScreenEnabled) return true;
       if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
-      if(de.webkitRequestFullScreen&&document.webkitFullscreenEnabled) return true;
+      if(de.webkitRequestFullScreen) {
+        // Safari 5.x does not support webkitFullscreenEnabled - assume it's allowed
+        if (/Safari/.test(navigator.userAgent)&&document.webkitFullscreenEnabled==undefined) {
+          return true;
+        } else if (document.webkitFullscreenEnabled) {
+          return true;
+        }
+      }
       if(de.msRequestFullscreen&&document.msFullscreenEnabled) return true;
     }
     // Second fullscreen mode: Only the video element, relavant mostly for iPad
@@ -343,7 +350,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       return $this.video.prop('isFullscreen');
     } else {
       ve = $this.video[0];
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || ve.webkitDisplayingFullscreen) {
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.webkitIsFullScreen || document.mozFullScreenElement || document.msFullscreenElement || ve.webkitDisplayingFullscreen) {
         return true;
       } else {
         return false;
