@@ -133,6 +133,7 @@ package com.visual {
                     } else if( video.state=='playing' ) {
                         callback('play');
                         callback('playing');
+                        image.visible = false;
                     } else if( video.state=='paused'||video.state=='ready' ) {
                         callback('pause');
                     }
