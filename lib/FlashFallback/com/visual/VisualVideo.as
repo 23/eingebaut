@@ -77,7 +77,7 @@ package com.visual {
             if(this.pseudoStreamingOffset==0) {
                 pseudoSource = _source;
             } else {
-                pseudoSource = _source + (new RegExp("\\?").test(_source) ? '&' : '?') + 'start=' + this.pseudoStreamingOffset;
+                pseudoSource = _source + (new RegExp("\\?").test(_source) ? '&' : '?') + 'start=' + this.pseudoStreamingOffset + '&ec_seek=' + this.pseudoStreamingOffset;
             }
             _duration = 0;
 
