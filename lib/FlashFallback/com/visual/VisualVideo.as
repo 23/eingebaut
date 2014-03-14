@@ -105,6 +105,7 @@ package com.visual {
             matchVideoSize();
 
             if(!this.attachedEvents) {
+                this.video.addEventListener('mediaError', function():void{callback('error');});
                 this.video.addEventListener('durationChange', function():void{_duration=video.duration;});
                 this.video.addEventListener('bytesLoadedChange', function():void{callback('progress');});
                 this.video.addEventListener('complete', function():void{
