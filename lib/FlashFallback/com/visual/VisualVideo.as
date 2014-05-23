@@ -84,11 +84,11 @@ package com.visual {
             // Load the stream and attach to playback
             var resource:URLResource = new URLResource(pseudoSource);
             video = videoContainer.mediaPlayer;
-            video.autoPlay = isPlaying||queuePlay;
-            video.bufferTime = (isLive ? 0.1 : 1);
+            video.autoPlay = isPlaying||queuePlay
+            video.bufferTime = (isLive ? 5 : 2);
             queuePlay = false;
             video.autoRewind = false;
-            videoContainer.resource = new URLResource(pseudoSource);
+            videoContainer.resource = resource;
             videoContainer.media.addMetadata(LayoutMetadata.LAYOUT_NAMESPACE, layout);
 
             // Smoothing with OSMF isn't supposed to be easy. We'll try two different things...
