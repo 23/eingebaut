@@ -1,13 +1,14 @@
 package com.visual {
-    /* Flash widgets */
+    /* Flash classes */
     import flash.display.Sprite;
     import flash.external.ExternalInterface;
     import flash.events.Event;
 
-    /* OSMF widgets */
+    /* OSMF classes */
     import org.osmf.media.MediaPlayerSprite;
     import org.osmf.media.MediaPlayer;
     import org.osmf.media.URLResource;
+    import org.osmf.net.StreamingURLResource;
     import org.osmf.elements.VideoElement;
     import org.osmf.media.MediaElement;
     import org.osmf.utils.OSMFSettings;
@@ -17,11 +18,19 @@ package com.visual {
     import org.osmf.layout.ScaleMode;
     import org.osmf.traits.DisplayObjectTrait;
     import org.osmf.traits.MediaTraitType;
+    import org.osmf.events.MediaFactoryEvent;
+    import org.osmf.media.PluginInfoResource;
+    import org.osmf.media.DefaultMediaFactory;
+    import org.osmf.media.MediaFactory;
+
+    /* HLSProvider */
+    import org.mangui.osmf.plugins.HLSPlugin;
 
     public class VisualVideo extends Sprite {
         // Create the container classes to displays media. 
         OSMFSettings.enableStageVideo = false;
         private var image:VisualImage = new VisualImage();
+        private var factory:MediaFactory = null;
         private var videoContainer:MediaPlayerSprite = null;
         private var video:MediaPlayer = null;
         private var layout:LayoutMetadata = new LayoutMetadata();
@@ -46,6 +55,11 @@ package com.visual {
         private var inited:Boolean = false;
         private function init():void {
             if(inited) return;
+
+            // Load HLSprovider OSMF from https://github.com/mangui/HLSprovider
+            //   (specifically, https://github.com/mangui/HLSprovider/blob/master/lib/HLSProviderOSMF.swc)
+            factory = new DefaultMediaFactory();
+            factory.loadPlugin(new PluginInfoResource(new HLSPlugin()));
 
             // Alignment
             layout.scaleMode = ScaleMode.LETTERBOX;
@@ -82,13 +96,14 @@ package com.visual {
             _duration = 0;
 
             // Load the stream and attach to playback
-            var resource:URLResource = new URLResource(pseudoSource);
+            var resource:StreamingURLResource = new StreamingURLResource(pseudoSource);
+            var media:MediaElement = factory.createMediaElement(resource);
             video = videoContainer.mediaPlayer;
             video.autoPlay = isPlaying||queuePlay
             video.bufferTime = (isLive ? 5 : 2);
             queuePlay = false;
             video.autoRewind = false;
-            videoContainer.resource = resource;
+            videoContainer.mediaPlayer.media = media;
             videoContainer.media.addMetadata(LayoutMetadata.LAYOUT_NAMESPACE, layout);
 
             // Smoothing with OSMF isn't supposed to be easy. We'll try two different things...
