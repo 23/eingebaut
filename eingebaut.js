@@ -133,7 +133,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.video = {
         queue:[],
         0: {
-          canPlayType: function(t){return t=='video/mp4; codecs="avc1.42E01E"';},
+          canPlayType: function(t){return t=='video/mp4; codecs="avc1.42E01E"' || t=='application/vnd.apple.mpegURL';},
           play:function(){$this.video.call('setPlaying', true);},
           pause:function(){$this.video.call('setPlaying', false);}
         },
