@@ -101,4 +101,4 @@ Flash/OSMF (`displayDevice="flash"`) will play:
 
 Eingebaut has been tested and works in Internet Explorer 6+, Safari 4+, Opera 9+ and Firefox 3+ along with Mobile Safari on all recent versions of iOS for iPad and iPhone.
 
-The project depends on [jQuery](http://jquery.com/) and [SWFObject](http://code.google.com/p/swfobject/).
+The project depends on [jQuery](http://jquery.com/) and [SWFObject](http://code.google.com/p/swfobject/). The Flash fallback object uses a [23 fork](https://github.com/23/HLSprovider) of [HLSprovider](https://github.com/mangui/HLSprovider), but this is only needed to compile.
