@@ -218,6 +218,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.getPoster = function() {
     return $this.video.prop('poster');
   };
+  $this.getProgramDate = function() {
+    return $this.video.prop('programDate');
+  };
   $this.setPlaying = function(playing) {
     if (playing) {
       $this.video[0].preload = 'preload';

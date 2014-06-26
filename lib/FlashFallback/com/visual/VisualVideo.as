@@ -25,6 +25,7 @@ package com.visual {
 
     /* HLSProvider */
     import org.mangui.osmf.plugins.HLSPlugin;
+    import org.mangui.osmf.plugins.HLSTimeTrait;
 
     public class VisualVideo extends Sprite {
         // Create the container classes to displays media. 
@@ -38,6 +39,7 @@ package com.visual {
         private var videoEnded:Boolean = false;
         private var queuePlay:Boolean = false;
         private var attachedEvents:Boolean = false;
+        private var timeTrait:HLSTimeTrait = null;
         public var pseudoStreamingOffset:Number = 0;
 
         // Logging
@@ -75,6 +77,7 @@ package com.visual {
             inited = true;
         }
 
+
         // PROPERTIES
         // Property: Source
         private var _source:String = null;
@@ -98,6 +101,20 @@ package com.visual {
             // Load the stream and attach to playback
             var resource:StreamingURLResource = new StreamingURLResource(pseudoSource);
             var media:MediaElement = factory.createMediaElement(resource);
+
+            // Load a reference to the timeTrait, if possible
+            media.addEventListener(MediaElementEvent.TRAIT_ADD, function(event:MediaElementEvent):void {
+              if(event.traitType == MediaTraitType.TIME) {
+                var trait:Object = videoContainer.media.getTrait(MediaTraitType.TIME);
+                if(trait is HLSTimeTrait) {
+                  timeTrait = (trait as HLSTimeTrait);
+                } else {
+                  timeTrait = null;
+                }
+              }
+            });
+
+            // Video properties
             video = videoContainer.mediaPlayer;
             video.autoPlay = isPlaying||queuePlay
             video.bufferTime = (isLive ? 5 : 2);
@@ -173,6 +190,15 @@ package com.visual {
         }
         public function get poster():String {
             return _poster;
+        }
+
+        // Property: Program date
+        public function get programDate():Number {
+            if(timeTrait) {
+              return timeTrait.programDate;
+            } else {
+              return 0
+            }
         }
         
         // Property: Playing

@@ -49,7 +49,7 @@ package {
       // Interact with JavaScript
       if (ExternalInterface.available) {
         video.callback = function(ev:String):void {
-          trace('FlashFallbackCallback: ' + ev);
+          //trace('FlashFallbackCallback: ' + ev);
           ExternalInterface.call("FlashFallbackCallback", ev);
         }
 
@@ -78,6 +78,9 @@ package {
           });
         ExternalInterface.addCallback("getPoster", function():String{
             return video.poster;
+          });
+        ExternalInterface.addCallback("getProgramDate", function():Number{
+            return video.programDate;
           });
         ExternalInterface.addCallback("setPlaying", function(playing:Boolean):void {
             if(isFullscreen&&!playing) return;
