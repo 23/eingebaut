@@ -85,6 +85,8 @@ package com.visual {
             init();
 
             _source=s;
+            _isLive = ( /^rtmp:\/\//.test(_source.toLowerCase()) || /\.f4m/.test(_source.toLowerCase()) || /\.m3u8/.test(_source.toLowerCase()) );
+
             //this really should be reset here, but we need to be able to overwrite with a property// this.pseudoStreamingOffset = 0;
 
             this.loadFired = false;
@@ -240,17 +242,22 @@ package com.visual {
         public function set currentTime(ct:Number):void {
             if(!this.video) return;
             if(ct<0||ct>duration) return;
-            if(isLive) return;
 
-            if(ct<this.pseudoStreamingOffset || ct>this.bufferTime) {
-                _duration = duration - ct; // Guesstimate the duration of the new clip before changing the offset
-                this.pseudoStreamingOffset = ct;
-                trace('Pseudo streaming from ' + this.pseudoStreamingOffset);
-                source = source; // switch source with new pseudo stream time
-            } else {
+            if(isLive) {
                 try {
-                    this.video.seek(ct-this.pseudoStreamingOffset);
+                    this.video.seek(ct);
                 }catch(e:Error){}
+            } else {
+                if(ct<this.pseudoStreamingOffset || ct>this.bufferTime) {
+                    _duration = duration - ct; // Guesstimate the duration of the new clip before changing the offset
+                    this.pseudoStreamingOffset = ct;
+                    trace('Pseudo streaming from ' + this.pseudoStreamingOffset);
+                    source = source; // switch source with new pseudo stream time
+                } else {
+                    try {
+                        this.video.seek(ct-this.pseudoStreamingOffset);
+                    }catch(e:Error){}
+                }
             }
         }
         public function get currentTime():Number {
@@ -260,11 +267,7 @@ package com.visual {
         // Property: Duration
         private var _duration:Number = 0; 
         public function get duration():Number {
-            if(isLive) {
-              return currentTime;
-            } else {
-              return (this.video ? this.pseudoStreamingOffset+_duration : 0);
-            }
+          return (this.video ? this.pseudoStreamingOffset+_duration : 0);
         }
         
         // Property: Buffer time
@@ -272,7 +275,7 @@ package com.visual {
             if(!this.video) return 0;
 
             if(isLive) {
-                return currentTime;
+                return duration;
             } else {
                 var bytesLoaded:int = (this.video ? this.video.bytesLoaded : 0);
                 var bytesTotal:int = (this.video ? this.video.bytesTotal : 0);
@@ -295,8 +298,9 @@ package com.visual {
         }
 
         // Property: isLive
+        private var _isLive:Boolean = false;
         public function get isLive():Boolean {
-            return( /^rtmp:\/\//.test(_source.toLowerCase()) || /\.f4m$/.test(_source.toLowerCase()) );
+            return _isLive;
         }
 
 
