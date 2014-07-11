@@ -78,6 +78,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           if(e.type=='loaded') $this.loadedFired = true;
           if(e.type=='webkitbeginfullscreen') $this.callback("enterfullscreen");
           if(e.type=='webkitendfullscreen') $this.callback("leavefullscreen");
+          if(e.type=='loadeddata') $this.handleProgramDate();
 
           if($this.video.prop('seekable').length>0 && _startTime>0) {
             try {
@@ -218,8 +219,44 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.getPoster = function() {
     return $this.video.prop('poster');
   };
+  $this.streamStartDate = 0;
   $this.getProgramDate = function() {
-    return $this.video.prop('programDate');
+    if($this.displayDevice=="html5"){
+      if($this.streamStartDate>0){
+        return $this.streamStartDate + ($this.getCurrentTime()*1000);
+      }else{
+        return 0;
+      }
+    }else{
+      return $this.video.prop('programDate')||0;
+    }
+  };
+  // Program date handling for HTML5 playback of HLS streams
+  // Parses the playlist and chunklist to get ahold of the Program Date
+  $this.programDateHandling = false;
+  $this.setProgramDateHandling = function(handle){
+    $this.programDateHandling = handle;
+  };
+  $this.handleProgramDate = function(){
+    $this.streamStartDate = 0;
+    if($this.programDateHandling&&/\.m3u8/.test($this.getSource())){
+      $.ajax({
+        url: $this.getSource(),
+        cache: true,
+        success: function(res){
+          $.ajax({
+            url: $this.getSource().split("/").slice(0,-1).join("/")+"/"+res.match(/chunklist[^ ]*\.m3u8/),
+            cache: true,
+            success: function(data){
+              var date = Date.parse(data.match(/DATE-TIME:([^#\n]*)/)[1]);
+              if(!isNaN(date)){
+                $this.streamStartDate = date;
+              }
+            }
+          });
+        }
+      });
+    }
   };
   $this.setPlaying = function(playing) {
     if (playing) {
