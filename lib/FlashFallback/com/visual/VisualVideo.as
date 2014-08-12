@@ -81,7 +81,10 @@ package com.visual {
         // PROPERTIES
         // Property: Source
         private var _source:String = null;
+        private var resource:StreamingURLResource = null;
+        private var media:MediaElement = null;
         public function set source(s:String):void {
+            if(s==_source) return;
             init();
 
             _source=s;
@@ -101,12 +104,12 @@ package com.visual {
             _duration = 0;
 
             // Load the stream and attach to playback
-            var resource:StreamingURLResource = new StreamingURLResource(pseudoSource);
-            var media:MediaElement = factory.createMediaElement(resource);
+            resource = new StreamingURLResource(pseudoSource);
+            media = factory.createMediaElement(resource);
 
             // Load a reference to the timeTrait, if possible
             media.addEventListener(MediaElementEvent.TRAIT_ADD, function(event:MediaElementEvent):void {
-              if(event.traitType == MediaTraitType.TIME) {
+              if(event.traitType == MediaTraitType.TIME && videoContainer && videoContainer.media) {
                 var trait:Object = videoContainer.media.getTrait(MediaTraitType.TIME);
                 if(trait is HLSTimeTrait) {
                   timeTrait = (trait as HLSTimeTrait);
