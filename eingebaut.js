@@ -393,7 +393,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       return $this.video.prop('isFullscreen');
     } else {
       ve = $this.video[0];
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.webkitIsFullScreen || document.mozFullScreenElement || document.msFullscreenElement || ve.webkitDisplayingFullscreen) {
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.webkitIsFullScreen || document.mozFullScreenElement || document.msFullscreenElement) {
         return true;
       } else {
         return false;
