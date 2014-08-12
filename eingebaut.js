@@ -33,7 +33,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     switch(e) {
       case 'play':
       case 'playing':
-      case 'progress':
         if($this.floatingPoster) $this.floatingPoster.hide();
         break;
       case 'ended':
