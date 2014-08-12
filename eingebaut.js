@@ -123,6 +123,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         if(e=='flashloaded'&&!$this.ready) {
           $this.ready = true;
           $this.callback('flashloaded');
+          $this.callback('loaded');
           $this.callback('ready');
           $this.supportsVolumeChange();
         } else {
@@ -228,7 +229,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         return 0;
       }
     }else{
-      return $this.video.prop('programDate')||0;
+      try {
+        return $this.video.prop('programDate')||0;
+      } catch(e) {
+        return 0;
+      }
     }
   };
   // Program date handling for HTML5 playback of HLS streams
@@ -280,7 +285,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     }
   };
   $this.getPlaying = function() {
-    return !$this.video.prop('paused');
+    try {
+      return !$this.video.prop('paused');
+    }catch(e){
+      return false;
+    }
   };
   $this.setPaused = function(paused) {
     $this.setPlaying(!paused);
@@ -492,7 +501,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         $this.displayDevice = 'none';
       }
     }
-    $this.callback('loaded');
+    if($this.displayDevice != 'flash') {
+      $this.callback('loaded');
+    }
   }
   return $this;
 };
