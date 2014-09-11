@@ -82,6 +82,7 @@ package com.visual {
         // PROPERTIES
         // Property: Source
         private var _source:String = null;
+        private var _currentActualSource:String = null;
         private var resource:StreamingURLResource = null;
         private var media:MediaElement = null;
         public function set source(s:String):void {
@@ -92,22 +93,23 @@ package com.visual {
             this.pseudoStreamingOffset = 0;
           }
 
-          if(s==_source) return;
+          var pseudoSource:String = '';
+          if(this.pseudoStreamingOffset==0) {
+            pseudoSource = s;
+          } else {
+            pseudoSource = s + (new RegExp("\\?").test(s) ? '&' : '?') + 'start=' + this.pseudoStreamingOffset + '&ec_seek=' + this.pseudoStreamingOffset;
+          }
+
+          if(pseudoSource==_currentActualSource) return;
+
           init();
-          _source=s;
+          _source = s;
+          _currentActualSource = pseudoSource;
 
-            //this really should be reset here, but we need to be able to overwrite with a property// this.pseudoStreamingOffset = 0;
-
-            this.loadFired = false;
-            this.videoEnded = false;
-            var isPlaying:Boolean = (video && video.playing);
-            var pseudoSource:String = '';
-            if(this.pseudoStreamingOffset==0) {
-                pseudoSource = _source;
-            } else {
-                pseudoSource = _source + (new RegExp("\\?").test(_source) ? '&' : '?') + 'start=' + this.pseudoStreamingOffset + '&ec_seek=' + this.pseudoStreamingOffset;
-            }
-            _duration = 0;
+          this.loadFired = false;
+          this.videoEnded = false;
+          var isPlaying:Boolean = (video && video.playing);
+          _duration = 0;
 
             // Load the stream and attach to playback
             resource = new StreamingURLResource(pseudoSource);
@@ -176,10 +178,10 @@ package com.visual {
                     if( video.state=='buffering'||video.state=='playbackError'||video.state=='loading' ) {
                         callback('stalled');
                     } else if( video.state=='playing' ) {
-                        if(seekOnPlay > 0) {
-                          currentTime = seekOnPlay;
-                          seekOnPlay = 0;
-                        }
+                        ///if(seekOnPlay > 0) {
+                        ///  currentTime = seekOnPlay;
+                        ///  seekOnPlay = 0;
+                        ///}
                         callback('play');
                         callback('playing');
                         image.visible = false;
