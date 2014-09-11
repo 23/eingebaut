@@ -90,11 +90,12 @@ package com.visual {
             _source=s;
             _isLive = ( /^rtmp:\/\//.test(_source.toLowerCase()) || /\.f4m/.test(_source.toLowerCase()) || /\.m3u8/.test(_source.toLowerCase()) );
             _isAdaptive = /\.m3u8/.test(_source.toLowerCase());
+          trace('set source, before this.pseudoStreamingOffset = ' + this.pseudoStreamingOffset);
           if(isLive || isAdaptive) this.pseudoStreamingOffset = 0;
           trace('_source = ' + _source);
           trace('_isLive = ' + _isLive);
           trace('_isAdaptive = ' + _isAdaptive);
-          trace('set source, this.pseudoStreamingOffset = ' + this.pseudoStreamingOffset);
+          trace('set source, after this.pseudoStreamingOffset = ' + this.pseudoStreamingOffset);
 
             //this really should be reset here, but we need to be able to overwrite with a property// this.pseudoStreamingOffset = 0;
 
@@ -260,6 +261,7 @@ package com.visual {
             } else {
                 if(ct<this.pseudoStreamingOffset || ct>this.bufferTime) {
                     _duration = duration - ct; // Guesstimate the duration of the new clip before changing the offset
+          trace('set currentTime. set this.pseudoStreamingOffset = ' + ct);
                     this.pseudoStreamingOffset = ct;
                     trace('Pseudo streaming from ' + this.pseudoStreamingOffset);
                     source = source; // switch source with new pseudo stream time
