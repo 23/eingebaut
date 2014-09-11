@@ -87,9 +87,8 @@ package com.visual {
         public function set source(s:String):void {
           _isLive = ( /^rtmp:\/\//.test(s.toLowerCase()) || /\.f4m/.test(s.toLowerCase()) || /\.m3u8/.test(s.toLowerCase()) );
           _isAdaptive = /\.m3u8/.test(s.toLowerCase());
-          this.seekOnPlay = 0;
           if(isLive || isAdaptive) {
-            this.seekOnPlay = this.pseudoStreamingOffset;
+            if(this.seekOnPlay==0 && this.pseudoStreamingOffset>0) this.seekOnPlay = this.pseudoStreamingOffset;
             this.pseudoStreamingOffset = 0;
           }
 
