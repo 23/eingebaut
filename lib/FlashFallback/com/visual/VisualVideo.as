@@ -162,8 +162,6 @@ package com.visual {
                 this.video.addEventListener('canPlayChange', function():void{
                     if(video.canPlay) {
                         callback('canplay');
-                        this.currentTime = this.seekOnPlay;
-                        this.seekOnPlay = 0;
                         if(queuePlay) {
                             playing = true;
                             queuePlay = false;
@@ -221,8 +219,16 @@ package com.visual {
             if(!this.video) return;
             try {
                 if(p) {
-                    if(this.videoEnded) this.currentTime = 0;
                     this.video.play();
+
+                  trace('this.seekOnPlay = ' + this.seekOnPlay);
+                  if(this.videoEnded) {
+                    this.currentTime = 0;
+                  } else if(this.seekOnPlay > 0) {
+                    this.currentTime = this.seekOnPlay;
+                    this.seekOnPlay = 0;
+                  }
+
                     callback('play');
                 } else {
                     this.video.pause();
