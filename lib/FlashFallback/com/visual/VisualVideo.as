@@ -41,6 +41,7 @@ package com.visual {
         private var attachedEvents:Boolean = false;
         private var timeTrait:HLSTimeTrait = null;
         public var pseudoStreamingOffset:Number = 0;
+        public var seekOnPlay:Number = 0;
 
         // Logging
         private function trace(s:String):void {
@@ -87,7 +88,11 @@ package com.visual {
           this.pseudoStreamingOffset = 0
           _isLive = ( /^rtmp:\/\//.test(s.toLowerCase()) || /\.f4m/.test(s.toLowerCase()) || /\.m3u8/.test(s.toLowerCase()) );
           _isAdaptive = /\.m3u8/.test(s.toLowerCase());
-          if(isLive || isAdaptive) this.pseudoStreamingOffset = 0;
+          this.seekOnPlay = 0;
+          if(isLive || isAdaptive) {
+            this.seekOnPlay = this.pseudoStreamingOffset;
+            this.pseudoStreamingOffset = 0;
+          }
 
           if(s==_source) return;
           init();
@@ -157,6 +162,8 @@ package com.visual {
                 this.video.addEventListener('canPlayChange', function():void{
                     if(video.canPlay) {
                         callback('canplay');
+                        this.currentTime = this.seekOnPlay;
+                        this.seekOnPlay = 0;
                         if(queuePlay) {
                             playing = true;
                             queuePlay = false;
