@@ -85,7 +85,6 @@ package com.visual {
         private var resource:StreamingURLResource = null;
         private var media:MediaElement = null;
         public function set source(s:String):void {
-          this.pseudoStreamingOffset = 0
           _isLive = ( /^rtmp:\/\//.test(s.toLowerCase()) || /\.f4m/.test(s.toLowerCase()) || /\.m3u8/.test(s.toLowerCase()) );
           _isAdaptive = /\.m3u8/.test(s.toLowerCase());
           this.seekOnPlay = 0;
