@@ -250,6 +250,7 @@ package com.visual {
             if(!this.video) return;
             if(ct<0||ct>duration) return;
 
+          trace('set currentTime, isAdaptive = ' + isAdaptive);
             if(isLive || isAdaptive) {
                 try {
                     this.video.seek(ct);
@@ -266,6 +267,8 @@ package com.visual {
                     }catch(e:Error){}
                 }
             }
+
+          trace('set currentTime, this.pseudoStreamingOffset = ' + this.pseudoStreamingOffset);
         }
         public function get currentTime():Number {
             return (this.video ? this.pseudoStreamingOffset + this.video.currentTime : 0);
