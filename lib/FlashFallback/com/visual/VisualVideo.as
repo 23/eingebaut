@@ -90,6 +90,7 @@ package com.visual {
             _source=s;
             _isLive = ( /^rtmp:\/\//.test(_source.toLowerCase()) || /\.f4m/.test(_source.toLowerCase()) || /\.m3u8/.test(_source.toLowerCase()) );
             _isAdaptive = /\.m3u8/.test(_source.toLowerCase());
+          if(isLive || isAdaptive) this.pseudoStreamingOffset = 0;
           trace('_source = ' + _source);
           trace('_isLive = ' + _isLive);
           trace('_isAdaptive = ' + _isAdaptive);
