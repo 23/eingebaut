@@ -54,7 +54,7 @@ package {
         }
 
         ExternalInterface.addCallback("setSource", function(source:String, startTime:Number=0):void {
-            //video.pseudoStreamingOffset = startTime;
+            video.pseudoStreamingOffset = startTime;
             video.source = source;
           });
         ExternalInterface.addCallback("getSource", function():String{
