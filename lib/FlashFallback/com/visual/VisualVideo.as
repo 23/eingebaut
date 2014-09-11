@@ -89,6 +89,7 @@ package com.visual {
 
             _source=s;
             _isLive = ( /^rtmp:\/\//.test(_source.toLowerCase()) || /\.f4m/.test(_source.toLowerCase()) || /\.m3u8/.test(_source.toLowerCase()) );
+            _isAdaptive = /\.m3u8/.test(_source.toLowerCase());
 
             //this really should be reset here, but we need to be able to overwrite with a property// this.pseudoStreamingOffset = 0;
 
@@ -246,7 +247,7 @@ package com.visual {
             if(!this.video) return;
             if(ct<0||ct>duration) return;
 
-            if(isLive) {
+            if(isLive || isAdaptive) {
                 try {
                     this.video.seek(ct);
                 }catch(e:Error){}
@@ -304,6 +305,12 @@ package com.visual {
         private var _isLive:Boolean = false;
         public function get isLive():Boolean {
             return _isLive;
+        }
+
+        // Property: isAdaptive
+        private var _isAdaptive:Boolean = false;
+        public function get isAdaptive():Boolean {
+            return _isAdaptive;
         }
 
 
