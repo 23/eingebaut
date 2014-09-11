@@ -148,6 +148,7 @@ package com.visual {
             matchVideoSize();
 
             if(!this.attachedEvents) {
+                var $this:Object = this;
                 this.video.addEventListener('mediaError', function():void{callback('error');});
                 this.video.addEventListener('durationChange', function():void{_duration=video.duration;});
                 this.video.addEventListener('bytesLoadedChange', function():void{callback('progress');});
@@ -175,6 +176,10 @@ package com.visual {
                     if( video.state=='buffering'||video.state=='playbackError'||video.state=='loading' ) {
                         callback('stalled');
                     } else if( video.state=='playing' ) {
+                        if(seekOnPlay > 0) {
+                          currentTime = seekOnPlay;
+                          seekOnPlay = 0;
+                        }
                         callback('play');
                         callback('playing');
                         image.visible = false;
@@ -218,15 +223,7 @@ package com.visual {
             try {
                 if(p) {
                     this.video.play();
-
-                  trace('this.seekOnPlay = ' + this.seekOnPlay);
-                  if(this.videoEnded) {
-                    this.currentTime = 0;
-                  } else if(this.seekOnPlay > 0) {
-                    this.currentTime = this.seekOnPlay;
-                    this.seekOnPlay = 0;
-                  }
-
+                    if(this.videoEnded) this.currentTime = 0;
                     callback('play');
                 } else {
                     this.video.pause();
@@ -260,7 +257,6 @@ package com.visual {
             if(!this.video) return;
             if(ct<0||ct>duration) return;
 
-          trace('set currentTime, isAdaptive = ' + isAdaptive);
             if(isLive || isAdaptive) {
                 try {
                     this.video.seek(ct);
@@ -268,7 +264,6 @@ package com.visual {
             } else {
                 if(ct<this.pseudoStreamingOffset || ct>this.bufferTime) {
                     _duration = duration - ct; // Guesstimate the duration of the new clip before changing the offset
-          trace('set currentTime. set this.pseudoStreamingOffset = ' + ct);
                     this.pseudoStreamingOffset = ct;
                     trace('Pseudo streaming from ' + this.pseudoStreamingOffset);
                     source = source; // switch source with new pseudo stream time
@@ -278,8 +273,6 @@ package com.visual {
                     }catch(e:Error){}
                 }
             }
-
-          trace('set currentTime, this.pseudoStreamingOffset = ' + this.pseudoStreamingOffset);
         }
         public function get currentTime():Number {
             return (this.video ? this.pseudoStreamingOffset + this.video.currentTime : 0);
