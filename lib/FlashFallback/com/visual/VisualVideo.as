@@ -94,6 +94,7 @@ package com.visual {
           trace('_source = ' + _source);
           trace('_isLive = ' + _isLive);
           trace('_isAdaptive = ' + _isAdaptive);
+          trace('set source, this.pseudoStreamingOffset = ' + this.pseudoStreamingOffset);
 
             //this really should be reset here, but we need to be able to overwrite with a property// this.pseudoStreamingOffset = 0;
 
