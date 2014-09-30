@@ -357,7 +357,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // iPhone in particular doesn't allow controls in <video> to be hidden entirely, meaning that we
   // shouldn't show the <video> element, but instead a thumbnail, when the video is paused.
   $this.allowHiddenControls = function() {
-    if ($this.displayDevice=='html5'&&/(iPhone|iPod|Windows.Phone)/.test(navigator.userAgent)) {
+    if ($this.displayDevice=='html5'&&/(iPhone|iPod|Windows.Phone)/.test(navigator.userAgent)&&!/iPad/.test(navigator.userAgent)) {
       return false;
     } else if ($this.displayDevice=='html5'&&/Android/.test(navigator.userAgent)&&!/Chrome/.test(navigator.userAgent)) {
       return false;
