@@ -188,13 +188,16 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.getStartTime = function(){
     return _startTime;
   };
-  $this.setSource = function(source, startTime) {
+  $this.setSource = function(source, startTime, poster) {
     $this.switching = true;
     if ($this.displayDevice=='html5') {
       $this.video.prop('src', source);
       _startTime = startTime;
     } else {
       $this.video.prop('src', source, startTime);
+    }
+    if(poster){
+      $this.setPoster(poster);
     }
   };
   $this.getSource = function(){
@@ -233,6 +236,32 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         $this.queuedPlay = false;
       }
     }
+  };
+
+  $this.setContext = function(context){
+    if(!$this.originalContext&&$this.getSource()!=""){
+      $this.originalContext = {
+        source: $this.getSource(),
+        poster: $this.getPoster(),
+        callback: $this._callback,
+        displayDevice: $this.displayDevice
+      };
+    }
+    if(context.displayDevice&&context.displayDevice!=$this.displayDevice){
+      $this.loadDisplayDevice(context.displayDevice);
+    }
+    if(!$this.ready) {
+      $this.queuedContext = context;
+      return;
+    }
+    $this._callback = context.callback;
+    $this.setSource(context.source, context.startTime, context.poster);
+  };
+  $this.restoreContext = function(){
+    if($this.originalContext){
+      $this.setContext($this.originalContext);
+    }
+    $this.originalContext = null;
   };
 
   $this.streamStartDate = 0;
