@@ -50,6 +50,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   /* HEAVY LIFTING */
   // Load either a html5 <video> element or something in Flash
   $this.loadDisplayDevice = function(displayDevice){
+    $this.ready = false;
     $this.displayDevice = displayDevice;
     if ($this.displayDevice=='html5') {
       if(/MSIE ([6-9]|10)/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
@@ -98,7 +99,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         return false; // no html5 video
       }
       $this.container.prepend($this.video);
-      this.ready = true;
+      $this.setReady(true);
       $this.callback('ready');
       $this.callback('progress');
       $this.callback('timeupdate');
@@ -120,7 +121,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         if(e=='fullscreenprompt') $this.blind.hide();
         if(e=='clearfullscreenprompt') $this.blind.show();
         if(e=='flashloaded'&&!$this.ready) {
-          $this.ready = true;
+          $this.setReady(true);
           $this.callback('flashloaded');
           $this.callback('loaded');
           $this.callback('ready');
@@ -219,6 +220,21 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.getPoster = function() {
     return $this.video.prop('poster');
   };
+
+  $this.setReady = function(ready){
+    $this.ready = ready;
+    if(ready){
+      if($this.queuedContext){
+        $this.setContext($this.queuedContext);
+        $this.queuedContext = null;
+      }
+      if($this.queuedPlay){
+        $this.setPlaying(true);
+        $this.queuedPlay = false;
+      }
+    }
+  };
+
   $this.streamStartDate = 0;
   $this.getProgramDate = function() {
     if($this.displayDevice=="html5"){
@@ -266,6 +282,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.setPlaying = function(playing) {
     if (playing) {
+      if(!this.ready){
+        $this.queuedPlay = true;
+        return;
+      }
       $this.video[0].preload = 'preload';
       if($this.displayDevice=='html5' && /(iPhone|iPod|iPad)/.test(navigator.userAgent) && !$this.progressFired) {
         // In a few weird cases, iOS fails to preload content correctly; when this fails, try re-setting the source
@@ -281,6 +301,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       $this.video[0].play();
     } else {
       $this.video[0].pause();
+      $this.queuedPlay = false;
     }
   };
   $this.getPlaying = function() {
