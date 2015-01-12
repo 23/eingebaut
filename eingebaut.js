@@ -146,7 +146,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         prop:function(key,value,param){
           if(key=='src') key='source';
           key = key.substring(0,1).toUpperCase() + key.substring(1);
-          return (typeof(value)!='undefined' ? $this.video.call('set' + key, value, param): $this.video.call('get' + key));
+          try{
+            return (typeof(value)!='undefined' ? $this.video.call('set' + key, value, param): $this.video.call('get' + key));
+          }catch(e){
+            return "";
+          }
         },
         call:function(method,arg1,arg2){
           $this.video.element = document['FlashFallback']||window['FlashFallback'];
