@@ -10,6 +10,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.ready = false;
   $this.switching = false;
   $this.showPosterOnEnd = false;
+  $this.playbackInited = false;
 
   // A floating poster, to be shown on top of the video in some cases
   // This is also handled in Flash, so since browser up to and including IE8
@@ -52,6 +53,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.loadDisplayDevice = function(displayDevice){
     $this.ready = false;
     $this.displayDevice = displayDevice;
+    $this.playbackInited = false;
     if ($this.displayDevice=='html5') {
       if(/MSIE ([6-9]|10)/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
         // Internet Explorer 10 does support HTML5 video, but with a number of caveats.
@@ -73,6 +75,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           // Handle stalled property (which is basically "waiting")
           if(e.type=='waiting') $this.stalled = true;
           if(e.type=='playing'||e.type=='seeked') $this.stalled = false;
+          if(e.type=='play'||e.type=='playing') $this.playbackInited = true;
           // In some cases, iOS fails to preload content correctly; the progress event indicates that load was done
           if(e.type=='progress') $this.progressFired = true;
           if(e.type=='loaded') $this.loadedFired = true;
