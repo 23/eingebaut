@@ -51,6 +51,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   /* HEAVY LIFTING */
   // Load either a html5 <video> element or something in Flash
   $this.loadDisplayDevice = function(displayDevice){
+    $this.container.find("video, object").remove();
     $this.ready = false;
     $this.displayDevice = displayDevice;
     $this.playbackInited = false;
