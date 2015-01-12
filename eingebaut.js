@@ -290,6 +290,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       return false;
     }
   };
+  $this.canAutoplay = function(){
+    if($this.displayDevice == "flash"){
+      return true;
+    }else if($this.displayDevice == "html5"){
+      return (!/iPhone|iPad|Android/.test(navigator.userAgent) || $this.playbackInited);
+    }
+    return false;
+  };
   $this.setPaused = function(paused) {
     $this.setPlaying(!paused);
   };
