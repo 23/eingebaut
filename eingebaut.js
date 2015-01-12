@@ -207,8 +207,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     return $this.video.prop('src')||'';
   };
   $this.setPoster = function(poster) {
-      if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'}).show();
-    if ($this.displayDevice=='html5' && /Safari|iPhone/.test(navigator.userAgent) && !/(iPad|Android)/.test(navigator.userAgent)) {
+    if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'}).show();
+    if ($this.displayDevice=='html5' && /Safari|iPhone/.test(navigator.userAgent) && !/(iPad|Android|Chrome)/.test(navigator.userAgent)) {
       // Safari on Mac OS X has buggy rendering of the poster image,
       // when the video doesn't cover the entire video element.
       // Here, we give the video element a transparent poster
