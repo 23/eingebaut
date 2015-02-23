@@ -3,6 +3,7 @@ package com.visual {
     import flash.display.Sprite;
     import flash.external.ExternalInterface;
     import flash.events.Event;
+    import flash.system.Security;
 
     /* OSMF classes */
     import org.osmf.media.MediaPlayerSprite;
@@ -89,6 +90,18 @@ package com.visual {
           _isLive = ( /^rtmp:\/\//.test(s.toLowerCase()) || /\.f4m/.test(s.toLowerCase()) || /\.m3u8/.test(s.toLowerCase()) );
           _isAdaptive = /\.m3u8/.test(s.toLowerCase());
           if(isLive || isAdaptive) {
+            // This is specific for 23 Video where flash is not allowed to access the root
+            // folder on the server; but it is allowed to read in thumbnails and videos
+            // from a specific list of subfolders. To do so, we will need to read the 
+            // specific policy files for each folder though.
+            var res:Array = s.match(new RegExp('^https?://[^/]+/[0-9]+\/'));
+            if(res.length>0) {
+              var crossdomainPolicyURL:String = res[0] + 'crossdomain.xml';
+              trace('Loading policy file, ' + crossdomainPolicyURL);
+              Security.loadPolicyFile(crossdomainPolicyURL);
+            }
+            // (end)
+
             if(this.seekOnPlay==0 && this.pseudoStreamingOffset>0) this.seekOnPlay = this.pseudoStreamingOffset;
             this.pseudoStreamingOffset = 0;
           }
@@ -178,10 +191,10 @@ package com.visual {
                     if( video.state=='buffering'||video.state=='playbackError'||video.state=='loading' ) {
                         callback('stalled');
                     } else if( video.state=='playing' ) {
-                        ///if(seekOnPlay > 0) {
-                        ///  currentTime = seekOnPlay;
-                        ///  seekOnPlay = 0;
-                        ///}
+                        if(seekOnPlay > 0) {
+                          currentTime = seekOnPlay;
+                          seekOnPlay = 0;
+                        }
                         callback('play');
                         callback('playing');
                         image.visible = false;
