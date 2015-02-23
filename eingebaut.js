@@ -247,7 +247,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
 
   $this.setContext = function(context){
-    if(!$this.originalContext&&$this.getSource()!=""){
+    if(!$this.originalContext&&$this.getSource()!=""&&!context.preventBackup){
       $this.originalContext = {
         source: $this.getSource(),
         poster: $this.getPoster(),
