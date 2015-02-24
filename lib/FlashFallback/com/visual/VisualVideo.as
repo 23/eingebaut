@@ -95,7 +95,7 @@ package com.visual {
             // from a specific list of subfolders. To do so, we will need to read the 
             // specific policy files for each folder though.
             var res:Array = s.match(new RegExp('^https?://[^/]+/[0-9]+\/'));
-            if(res.length>0) {
+            if(res && res.length>0) {
               var crossdomainPolicyURL:String = res[0] + 'crossdomain.xml';
               trace('Loading policy file, ' + crossdomainPolicyURL);
               Security.loadPolicyFile(crossdomainPolicyURL);
