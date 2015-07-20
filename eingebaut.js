@@ -65,11 +65,24 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         return false;
       }
 
+      // Some versions of Windows (N-versions, server versions, etc.) do not
+      // have the media framework to play back videos. Internet Explorer will
+      // still happily create <video> elements, but trying to set 'preload' or
+      // any other actual functionality results in a "Not Implemented" exception
+      // Attempt to trigger it here
+      $this.video = $(document.createElement('video'));
+      try {
+        $this.video.attr({preload: 'none'});
+      } catch (e) {
+        delete $this.video;
+        return false;
+      }
+
       // HTML5 Display
       $this.stalled = false;
       $this.progressFired = false;
       $this.loadedFired = false;
-      $this.video = $(document.createElement('video'))
+      $this.video
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none'})
         .bind('error load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough webkitbeginfullscreen webkitendfullscreen', function(e){
