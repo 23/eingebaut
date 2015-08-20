@@ -449,7 +449,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   var _hasHTML5Fullscreen = function(){
     // First fullscreen mode: Full document, including all UI
     if($this.fullscreenContext=='document') {
-      var de = document.documentElement;
+      var de = document.body;
       if(de.requestFullScreen&&document.fullScreenEnabled) return true;
       if(de.mozRequestFullScreen&&document.mozFullScreenEnabled) return true;
       if(de.webkitRequestFullScreen) {
@@ -496,7 +496,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   });
   $this.enterFullscreen = function() {
     if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
-      var de = document.documentElement;
+      var de = document.body;
       var ve = $this.video[0];
       if($this.fullscreenContext=='document' && de.requestFullScreen) {
         de.requestFullScreen();
