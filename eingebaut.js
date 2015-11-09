@@ -211,8 +211,15 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   };
   $this.setSource = function(source, startTime, poster) {
     $this.switching = true;
+    $this.hls = null;
     if ($this.displayDevice=='html5') {
-      $this.video.prop('src', source);
+      if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
+        $this.hls = new Hls();
+        $this.hls.loadSource(source);
+        $this.hls.attachVideo($this.video[0]);
+      }else{
+        $this.video.prop('src', source);
+      }
       _startTime = startTime;
     } else {
       $this.video.prop('src', source, startTime);
@@ -222,6 +229,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     }
   };
   $this.getSource = function(){
+    if($this.hls && $this.hls.url){
+      return $this.hls.url;
+    }
     return $this.video.prop('src')||'';
   };
   $this.setPoster = function(poster) {
@@ -430,7 +440,13 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     return($this.video.prop('isLive')||/.m3u8/.test($this.getSource())||/\/http$/.test($this.getSource())||false);
   };
   $this.canPlayType = function(type) {
-    return $this.video[0].canPlayType(type);
+    if(!!$this.video[0].canPlayType(type)){
+      return true;
+    }
+    if(type.toLowerCase() == 'application/vnd.apple.mpegurl' && typeof Hls != "undefined" && !!window.chrome && !/OPR/.test(navigator.userAgent)){
+      return !!Hls.isSupported();
+    }
+    return false;
   };
 
   // iPhone in particular doesn't allow controls in <video> to be hidden entirely, meaning that we
