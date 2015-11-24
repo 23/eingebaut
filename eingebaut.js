@@ -527,13 +527,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       } else if($this.fullscreenContext=='document' && de.msRequestFullscreen) {
         de.msRequestFullscreen();
       } else if(ve.webkitEnterFullscreen) {
-        $this.setPlaying(true);
         ve.webkitEnterFullscreen();
       } else if(ve.mozRequestFullScreen) {
-        $this.setPlaying(true);
         ve.mozRequestFullScreen();
       } else if(ve.msRequestFullscreen) {
-        $this.setPlaying(true);
         ve.msRequestFullscreen();
       } else {
         return false;
