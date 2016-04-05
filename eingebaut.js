@@ -346,7 +346,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
         $this.queuedPlay = true;
         return;
       }
-      $this.video[0].preload = (/iPhone|iPad|iPod/.test(navigator.userAgent) ? "none" : "auto");
+      if(!/iPhone|iPod|iPad/.test(navigator.userAgent)){
+        // iOS sometimes hiccups when changing the preload attribute right before starting playback,
+        // so we only do this on other platforms
+        $this.video[0].preload = "auto";
+      }
       if($this.displayDevice=='html5' && /(iPhone|iPod|iPad)/.test(navigator.userAgent) && !$this.progressFired) {
         // In a few weird cases, iOS fails to preload content correctly; when this fails, try re-setting the source
         $this.setSource($this.getSource());
@@ -358,9 +362,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if($this.displayDevice=='html5' && !$this.allowHiddenControls() && /Android/.test(navigator.userAgent)) {
         $this.video.css({width:'100%',height:'100%'});
       }
-      window.setTimeout(function(){
-        $this.video[0].play();
-      }, 1);
+      $this.video[0].play();
     } else {
       $this.video[0].pause();
       $this.queuedPlay = false;
