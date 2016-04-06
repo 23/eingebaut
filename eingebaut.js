@@ -216,7 +216,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
         $this.hls = new Hls();
         $this.hls.loadSource(source);
-        $this.hls.attachVideo($this.video[0]);
+        $this.hls.attachMedia($this.video[0]);
       }else{
         $this.video.prop('src', source);
       }
