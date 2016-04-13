@@ -362,7 +362,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
       if($this.displayDevice=='html5' && !$this.allowHiddenControls() && /Android/.test(navigator.userAgent)) {
         $this.video.css({width:'100%',height:'100%'});
       }
-      $this.video[0].play();
+      window.setTimeout(function(){
+        $this.video[0].play();
+      }, 1);
     } else {
       $this.video[0].pause();
       $this.queuedPlay = false;
