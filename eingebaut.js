@@ -574,6 +574,43 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     }
   };
 
+  $this.loadAframe = function(callback){
+    $.ajax({
+      url: "//aframe.io/releases/0.2.0/aframe.min.js",
+      dataType: "script"
+    });
+    var checkAframeLoaded = function(){
+      if(typeof AFRAME == "undefined"){
+        window.setTimeout(checkAframeLoaded, 500);
+      }else{
+        callback();
+      }
+    };
+    checkAframeLoaded();
+  };
+  $this.display360 = function(callback){
+    if(typeof AFRAME == "undefined"){
+      $this.loadAframe(function(){
+        $this.activate360(callback);
+      });
+    }else{
+      $this.activate360(callback);
+    }
+  };
+  $this.activate360 = function(callback){
+    var scene = $("<div><a-scene><a-assets></a-assets><a-videosphere src='#videoElement' radius='10000'></a-videosphere></a-scene></div>");
+    $this.video.attr({
+      "id": "videoElement",
+      "preload": "none"
+    }).prop({
+      "webkit-playsinline": true,
+      "autoplay": false
+    }).get(0).load();
+    scene.find("a-assets").append($this.video);
+    $this.container.append(scene);
+    window.setTimeout(callback, 500);
+  };
+
   // We will test whether volume changing is support on load an fire a `volumechange` event
   var _supportsVolumeChange;
   $this.supportsVolumeChange = function(){
