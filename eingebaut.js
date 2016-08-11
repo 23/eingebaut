@@ -1,4 +1,4 @@
-var Eingebaut = function(container, displayDevice, swfLocation, callback){
+var Eingebaut = function(container, displayDevice, swfLocation, callback, options){
   var $ = jQuery;
   var $this = this;
   $this.container = $(container);
@@ -7,6 +7,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.swfLocation = swfLocation||'/eingebaut/lib/FlashFallback/EingebautDebug.swf';
   $this._callback = callback||function(){};
   $this.fullscreenContext = 'document'; // can be overwritten to 'video' if you prefer only the video to be in full screen, not the entire document
+
+  // Options with defaults
+  $this.options = $.extend({
+    inlinePlayback: true
+  }, options || {});  
+    
   $this.ready = false;
   $this.switching = false;
   $this.showPosterOnEnd = false;
@@ -108,9 +114,33 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
           }
           $this.callback(e.type);
         });
+      if($this.options.inlinePlayback){
+        $this.video.attr({
+          'webkit-playsinline': "true",
+          'playsinline': "true"
+        });
+      }
 
       // Hide the standard Chrome on iPhone
-      if(!$this.allowHiddenControls()) $this.video.css({width:1,height:1});
+      if($this.allowHiddenControls()) {
+        if(/iPhone|iPod|iPad/.test(navigator.userAgent)){
+          var css = "video::-webkit-media-controls {opacity: 0;pointer-events:none;width:5px;}";
+          var head = document.head || document.getElementsByTagName("head")[0];
+          var stylesheet = document.createElement("style");
+          stylesheet.type = "text/css";
+          head.appendChild(stylesheet);
+          if(stylesheet.styleSheet){
+            stylesheet.styleSheet.cssText = css;
+          }else{
+            if(stylesheet.childNodes.length > 0){
+              stylesheet.removeChild( stylesheet.childNodes[0] );
+            }
+            stylesheet.appendChild(document.createTextNode(css));
+          }
+        }
+      } else {
+         $this.video.css({width:1,height:1});
+      }
 
       if(!$this.video[0].canPlayType) {
         return false; // no html5 video
@@ -381,7 +411,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
     if($this.displayDevice == "flash"){
       return true;
     }else if($this.displayDevice == "html5"){
-      return (!/iPhone|iPad|Android/.test(navigator.userAgent) || $this.playbackInited);
+      if(!/iPhone|iPad|iPod|Android/.test(navigator.userAgent) || $this.playbackInited) {
+        return true;
+      } else if( /iPhone|iPad|iPod/.test(navigator.userAgent) && parseInt( navigator.userAgent.match(/Version\/([0-9]*)\./)[1] ) > 9  && $this.video.get(0).muted ){
+        return true;
+      }
     }
     return false;
   };
@@ -394,8 +428,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   $this.setCurrentTime = function(currentTime) {
     if($this.displayDevice=='html5'&&$this.video[0].readyState<3) _startTime = currentTime;
     try {
-      var currentTime = +(currentTime).toFixed(1); // round off the number due to bug in iOS 3.2+
-      $this.video.prop('currentTime', Math.max(0,currentTime||0));
+      currentTime = +(currentTime).toFixed(1); // round off the number due to bug in iOS 3.2+
+      currentTime = Math.max(0,currentTime||0);
+      $this.video.prop('currentTime', currentTime);
     }catch(e){}
   };
   $this.getCurrentTime = function() {
@@ -458,7 +493,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback){
   // iPhone in particular doesn't allow controls in <video> to be hidden entirely, meaning that we
   // shouldn't show the <video> element, but instead a thumbnail, when the video is paused.
   $this.allowHiddenControls = function() {
-    if ($this.displayDevice=='html5'&&/(iPhone|iPod|Windows.Phone)/.test(navigator.userAgent)&&!/iPad/.test(navigator.userAgent)) {
+    if ($this.displayDevice=='html5'&&/Windows.Phone/.test(navigator.userAgent)) {
       return false;
     } else if ($this.displayDevice=='html5'&&/Android/.test(navigator.userAgent)&&!/Chrome/.test(navigator.userAgent)) {
       return false;
