@@ -356,7 +356,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         success: function(res){
           if(!/chunklist[^ ]*\.m3u8/.test(res)) return;
           $.ajax({
-            url: $this.getSource().split("/").slice(0,-1).join("/")+"/"+res.match(/chunklist[^ ]*\.m3u8/),
+            url: $this.getSource().split("/").slice(0,-1).join("/")+"/"+res.match(/chunklist[^ \n]*\.m3u8/),
             cache: true,
             success: function(data){
               if(!/DATE-TIME:([^#\n]*)/.test(data)) return;
