@@ -348,7 +348,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     $this.programDateHandling = handle;
   };
   $this.handleProgramDate = function(){
-    $this.streamStartDate = 0;
+    $this.streamStartDate = (new Date()).getTime();
     if($this.programDateHandling&&/\.m3u8/.test($this.getSource())){
       $.ajax({
         url: $this.getSource(),
