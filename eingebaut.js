@@ -102,6 +102,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           if(e.type=='webkitbeginfullscreen') $this.callback("enterfullscreen");
           if(e.type=='webkitendfullscreen') $this.callback("leavefullscreen");
           if(e.type=='loadeddata') $this.handleProgramDate();
+          if(!$this.ready && /canplay|canplaythrough/.test(e.type)) $this.setReady(true);
 
           if($this.video.prop('seekable').length>0 && _startTime>0) {
             try {
@@ -244,6 +245,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     $this.hls = null;
     if ($this.displayDevice=='html5') {
       if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
+        $this.setReady(false);
         $this.hls = new Hls();
         $this.hls.loadSource(source);
         $this.hls.attachMedia($this.video[0]);
@@ -372,7 +374,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   };
   $this.setPlaying = function(playing) {
     if (playing) {
-      if(!this.ready){
+      if(!$this.ready){
         $this.queuedPlay = true;
         return;
       }
