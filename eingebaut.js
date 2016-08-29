@@ -237,22 +237,37 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
 
   /* METHODS */
   _startTime = 0;
+  _delayedSource = null;
+  _activateDelayedSource = function(){
+    if(_delayedSource){
+      $this.setSource(_delayedSource.source, _delayedSource.startTime, _delayedSource.poster, false);
+    }
+  };
   $this.getStartTime = function(){
     return _startTime;
   };
-  $this.setSource = function(source, startTime, poster) {
+  $this.setSource = function(source, startTime, poster, delay) {
+    _delayedSource = null;
     $this.switching = true;
     $this.hls = null;
     if ($this.displayDevice=='html5') {
-      if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
-        $this.setReady(false);
-        $this.hls = new Hls();
-        $this.hls.loadSource(source);
-        $this.hls.attachMedia($this.video[0]);
+      if(!delay) {
+        if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
+          $this.setReady(false);
+          $this.hls = new Hls();
+          $this.hls.loadSource(source);
+          $this.hls.attachMedia($this.video[0]);
+        }else{
+          $this.video.prop('src', source);
+        }
+        _startTime = startTime;
       }else{
-        $this.video.prop('src', source);
+        _delayedSource = {
+          source: source,
+          startTime: startTime,
+          poster: poster
+        };
       }
-      _startTime = startTime;
     } else {
       $this.video.prop('src', source, startTime);
     }
@@ -261,6 +276,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }
   };
   $this.getSource = function(){
+    if(_delayedSource){
+      return _delayedSource.source;
+    }
     if($this.hls && $this.hls.url){
       return $this.hls.url;
     }
@@ -284,6 +302,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }
   };
   $this.getPoster = function() {
+    if(_delayedSource){
+      return _delayedSource.poster;
+    }
     return $this.video.prop('poster');
   };
 
@@ -318,7 +339,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       return;
     }
     $this._callback = context.callback;
-    $this.setSource(context.source, context.startTime, context.poster);
+    $this.setSource(context.source, context.startTime, context.poster, true);
   };
   $this.restoreContext = function(){
     if($this.originalContext){
@@ -374,6 +395,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   };
   $this.setPlaying = function(playing) {
     if (playing) {
+      if(_delayedSource){
+        _activateDelayedSource();
+      }
       if(!$this.ready){
         $this.queuedPlay = true;
         return;
@@ -385,7 +409,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       }
       if($this.displayDevice=='html5' && /(iPhone|iPod|iPad)/.test(navigator.userAgent) && !$this.progressFired) {
         // In a few weird cases, iOS fails to preload content correctly; when this fails, try re-setting the source
-        $this.setSource($this.getSource());
+        $this.setSource($this.getSource(), null, null, false);
       }
       // Android's standard internet browser (aptly called Internet) doesn't works too well with poster
       // So we use the trick of showing an image thumbnail and then scaling up the video device on play
