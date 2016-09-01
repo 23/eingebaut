@@ -510,7 +510,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     if(!!$this.video[0].canPlayType(type)){
       return true;
     }
-    if(type.toLowerCase() == 'application/vnd.apple.mpegurl' && typeof Hls != "undefined" && !!window.chrome && !/OPR/.test(navigator.userAgent)){
+    if(type.toLowerCase() == 'application/vnd.apple.mpegurl' && typeof Hls != "undefined"){
       return !!Hls.isSupported();
     }
     return false;
