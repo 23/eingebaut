@@ -102,7 +102,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           if(e.type=='webkitbeginfullscreen') $this.callback("enterfullscreen");
           if(e.type=='webkitendfullscreen') $this.callback("leavefullscreen");
           if(e.type=='loadeddata') $this.handleProgramDate();
-          if(!$this.ready && /canplay|canplaythrough/.test(e.type)) $this.setReady(true);
+          if(!$this.ready && /loadedmetadata|canplay|canplaythrough/.test(e.type)) $this.setReady(true);
 
           if($this.video.prop('seekable').length>0 && _startTime>0) {
             try {
