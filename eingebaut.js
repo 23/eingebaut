@@ -118,7 +118,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       if($this.options.inlinePlayback){
         $this.video.attr({
           'webkit-playsinline': "true",
-          'playsinline': "true"
+          'playsinline': "true",
+          'crossorigin': 'anonymous'
         });
       }
 
