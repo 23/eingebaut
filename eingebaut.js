@@ -240,7 +240,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   _delayedSource = null;
   _activateDelayedSource = function(){
     if(_delayedSource){
-      $this.setSource(_delayedSource.source, _delayedSource.startTime, _delayedSource.poster, false);
+      $this.setSource(_delayedSource.source, _delayedSource.startTime, null, false);
     }
   };
   $this.getStartTime = function(){
@@ -264,8 +264,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       }else{
         _delayedSource = {
           source: source,
-          startTime: startTime,
-          poster: poster
+          startTime: startTime
         };
       }
     } else {
@@ -302,9 +301,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }
   };
   $this.getPoster = function() {
-    if(_delayedSource){
-      return _delayedSource.poster;
-    }
     return $this.video.prop('poster');
   };
 
