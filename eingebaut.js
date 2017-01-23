@@ -257,6 +257,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           $this.hls = new Hls();
           $this.hls.loadSource(source);
           $this.hls.attachMedia($this.video[0]);
+          $this.video[0].load();
         }else{
           $this.video.prop('src', source);
         }
