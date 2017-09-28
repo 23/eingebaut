@@ -11,8 +11,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   // Options with defaults
   $this.options = $.extend({
     inlinePlayback: true
-  }, options || {});  
-    
+  }, options || {});
+
   $this.ready = false;
   $this.switching = false;
   $this.showPosterOnEnd = false;
@@ -416,7 +416,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         $this.video.css({width:'100%',height:'100%'});
       }
       window.setTimeout(function(){
-        $this.video[0].play();
+        var playPromise = $this.video[0].play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            // Prevent unhandled exceptions when switching between videos
+          });
+        }
       }, 1);
     } else {
       $this.video[0].pause();
