@@ -10,7 +10,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
 
   // Options with defaults
   $this.options = $.extend({
-    inlinePlayback: true
+    inlinePlayback: true,
+    startMuted: false
   }, options || {});
 
   $this.ready = false;
@@ -115,6 +116,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           }
           $this.callback(e.type);
         });
+      if($this.options.startMuted){
+        $this.video.attr({
+          'muted': "muted",
+        });
+      }
       if($this.options.inlinePlayback){
         $this.video.attr({
           'webkit-playsinline': "true",
@@ -500,6 +506,13 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     try {
       volume = Math.round(volume*10)/10.0;
       $this.video.prop('volume', volume);
+      if ($this.displayDevice=='html5') {
+        if(volume==0) {
+          $this.video[0].setAttribute('muted', 'muted');
+        } else {
+          $this.video[0].removeAttribute('muted');
+        }
+      }
     }catch(e){}
   };
   $this.getVolume = function() {
