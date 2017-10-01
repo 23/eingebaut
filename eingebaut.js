@@ -424,7 +424,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       window.setTimeout(function(){
         var playPromise = $this.video[0].play();
         if (playPromise !== undefined) {
-          playPromise.catch(error => {
+          playPromise.catch(function(error){
             // Prevent unhandled exceptions when switching between videos
           });
         }
