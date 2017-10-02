@@ -424,7 +424,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       window.setTimeout(function(){
         var playPromise = $this.video[0].play();
         if (playPromise !== undefined) {
-          playPromise.catch(error => {
+          playPromise.catch(function(error){
+            // Auto-play was prevented, see https://webkit.org/blog/7734/auto-play-policy-changes-for-macos/
             $this.setPlaying(false);
             $this.callback('autoplayfailed')
           });
