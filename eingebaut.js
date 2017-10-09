@@ -118,7 +118,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         });
       if($this.options.startMuted){
         $this.video.attr({
-          'muted': "muted",
+          'muted': "muted"
         });
       }
       if($this.options.inlinePlayback){
