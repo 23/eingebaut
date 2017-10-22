@@ -509,6 +509,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       volume = Math.round(volume*10)/10.0;
       $this.video.prop('volume', volume);
       if ($this.displayDevice=='html5') {
+        try {
+          $this.video[0].muted = (volume==0);
+        }catch(e){}
         if(volume==0) {
           $this.video[0].setAttribute('muted', 'muted');
         } else {
