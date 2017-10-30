@@ -360,11 +360,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         return 0;
       }
     }else{
+      var programDate = 0;
       try {
-        return $this.video.prop('programDate')||0;
-      } catch(e) {
-        return 0;
+        programDate = $this.video.prop('programDate')||0;
+      } catch(e) {}
+      if($this.streamStartDate>0 && programDate==0) {
+        programDate = $this.streamStartDate + ($this.getCurrentTime()*1000);
       }
+      return programDate;
     }
   };
   // Program date handling for HTML5 playback of HLS streams
