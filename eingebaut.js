@@ -429,6 +429,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         if (playPromise !== undefined && playPromise['catch'] !== undefined) {
           playPromise['catch'](function(err){
             // Auto-play was prevented, see https://webkit.org/blog/7734/auto-play-policy-changes-for-macos/
+            $this.autoPlayHasFailed = true;
             $this.setPlaying(false);
             $this.callback('autoplayfailed');
           });
@@ -658,6 +659,21 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }
   };
 
+  // This is not complete, but better than doing nothing
+  $this.autoPlayHasFailed = false;
+  $this.supportsAutoPlay = function(){
+    if($this.autoPlayHasFailed) return false;
+    if(
+        /Safari\/[6789]/.test(navigator.userAgent)
+        &&
+        !/(Chrome|OPR)/.test(navigator.userAgent)
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
   // We will test whether volume changing is support on load an fire a `volumechange` event
   var _supportsVolumeChange;
   $this.supportsVolumeChange = function(){
