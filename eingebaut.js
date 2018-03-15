@@ -42,6 +42,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       case 'play':
       case 'playing':
         if($this.floatingPoster) $this.floatingPoster.hide();
+        $this.container.css({background:'none'});
         break;
       case 'ended':
         if($this.floatingPoster&&$this.showPosterOnEnd) $this.floatingPoster.show();
