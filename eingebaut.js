@@ -443,7 +443,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   };
   $this.getPlaying = function() {
     try {
-      return !$this.video.prop('paused');
+      return !$this.video.prop('paused') && !$this.video.prop('ended');
     }catch(e){
       return false;
     }
@@ -464,7 +464,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     $this.setPlaying(!paused);
   };
   $this.getPaused = function() {
-    return $this.video.prop('paused');
+    return $this.video.prop('paused') || $this.video.prop('ended');
   };
   $this.setCurrentTime = function(currentTime) {
     if($this.displayDevice=='html5'&&$this.video[0].readyState<3) _startTime = currentTime;
