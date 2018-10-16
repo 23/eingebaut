@@ -263,7 +263,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           case "isLive":
             return;
           case "src":
-            return (param ? $this.mischung.setSource(param) : $this.mischung.getSource());
+            return (param ? $this.mischung.setSourceURL(param) : $this.mischung.getSourceURL());
           case "playing":
             return (param ? $this.mischung.setPlaying(param) : $this.mischung.getPlaying());
           case "paused":
