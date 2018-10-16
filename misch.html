@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- External dependencies: Lean on jQuery & SWFObject -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="../mischung/src/mischung.js"></script>
+
+    <!-- Eingebaut itself -->
+    <script src="eingebaut.js"></script>
+  </head>
+  <body>
+    <div id="video" style="width:640px; height:360px; background-color:yellow;"></div>
+    <script>
+     var eingebaut = new Eingebaut($('#video'), 'mischung', '', function(event){
+       if(event=='ready') {
+         eingebaut.setSource('../mischung/samples/kate.misch');
+         eingebaut.setPlaying(true);
+       }
+       console.debug(event);
+     });
+     eingebaut.load();
+    </script>
+  </body>
+</html>

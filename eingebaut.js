@@ -159,7 +159,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       $this.callback('progress');
       $this.callback('timeupdate');
       $this.supportsVolumeChange();
-    } else {
+    } else if ($this.displayDevice=='flash') {
       if(!swfobject.hasFlashPlayerVersion('10.1.0')) {
         return false;  // no flash support
       }
@@ -238,6 +238,65 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       $this.container.prepend($(document.createElement('div')).attr({'id':'FlashFallback'}));
       swfobject.embedSWF($this.swfLocation, 'FlashFallback', '100%', '100%', '10.1.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'});
 
+    } else if ($this.displayDevice=='mischung') {
+      if(!Mischung) {
+        console.log('Mischung library is required.');
+        return false;
+      }
+
+      $this.mischung = new Mischung($this.container[0], function(event){
+        console.log('mischung callback, event =', event);
+      });
+
+      // Emulate enough of the jQuery <video> object for our purposes
+      $this.video = {
+        queue:[],
+        0: {
+          canPlayType: function(t){return t=='video/mischung; codecs="avc1.42E01E"';},
+          play:function(){$this.video.prop('playing', true);},
+          pause:function(){$this.video.prop('playing', false);}
+        },
+        prop:function(key,value,param){
+          console.log('mischung prop', key,value,param);
+          switch(key) {
+          case "poster":
+          case "isLive":
+            return;
+          case "src":
+            return (param ? $this.mischung.setSource(param) : $this.mischung.getSource());
+          case "playing":
+            return (param ? $this.mischung.setPlaying(param) : $this.mischung.getPlaying());
+          case "paused":
+            return (param ? $this.mischung.setPlaying(!param) : !$this.mischung.getPlaying());
+          case "ended":
+            return (param ? $this.mischung.setEnded(param) : !$this.mischung.getEnded());
+          case "currentTime":
+            return (param ? $this.mischung.setCurrentTime(param) : $this.mischung.getCurrentTime());
+          case "seeking":
+            return (param ? $this.mischung.setSeeking(param) : $this.mischung.getSeeking());
+          case "stalled":
+            return (param ? $this.mischung.setStalled(param) : $this.mischung.getStalled());
+          case "duration":
+            return (param ? $this.mischung.setDuration(param) : $this.mischung.getDuration());
+          case "bufferTime":
+            return $this.mischung.getBufferTime();
+          case "volume":
+            return (param ? $this.mischung.setVolume(param) : $this.mischung.getVolume());
+          }
+        },
+        call:function(){},
+        element:$this.container.find('video')
+      };
+      $this.container.css({position:'relative'});
+      $this.video.element.css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
+      
+      $this.setReady(true);
+      $this.callback('loaded');
+      $this.callback('ready');
+      
+    } else {
+      console.log('Invalid display device');
+      return false;
     }
     return true;
   }
@@ -293,7 +352,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   };
   $this.setPoster = function(poster) {
     if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'}).show();
-    if ($this.displayDevice=='html5' && /Safari|iPhone/.test(navigator.userAgent) && !/(iPad|Android|Chrome)/.test(navigator.userAgent)) {
+    if ($this.displayDevice=='mischung') {
+      $this.video.poster = poster;
+      $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
+    } else if ($this.displayDevice=='html5' && /Safari|iPhone/.test(navigator.userAgent) && !/(iPad|Android|Chrome)/.test(navigator.userAgent)) {
       // Safari on Mac OS X has buggy rendering of the poster image,
       // when the video doesn't cover the entire video element.
       // Here, we give the video element a transparent poster
@@ -451,7 +513,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   $this.canAutoplay = function(){
     if($this.displayDevice == "flash"){
       return true;
-    }else if($this.displayDevice == "html5"){
+    }else if($this.displayDevice == "html5" || $this.displayDevice == "mischung"){
       if(!/iPhone|iPad|iPod|Android/.test(navigator.userAgent) || $this.playbackInited) {
         return true;
       } else if( /iPhone|iPad|iPod/.test(navigator.userAgent) && parseInt( navigator.userAgent.match(/Version\/([0-9]*)\./)[1] ) > 9  && $this.video.get(0).muted ){
