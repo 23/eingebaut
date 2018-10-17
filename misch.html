@@ -9,7 +9,7 @@
     <script src="eingebaut.js"></script>
   </head>
   <body>
-    <div id="video" style="width:640px; height:360px; background-color:yellow;"></div>
+    <div id="video" style="width:640px; height:360px; background-color:black;"></div>
     <script>
      var eingebaut = new Eingebaut($('#video'), 'mischung', '', function(event){
        if(event=='ready') {
@@ -20,5 +20,9 @@
      });
      eingebaut.load();
     </script>
+
+
+    <button onclick="eingebaut.setPlaying(false);">pause</button>
+    <button onclick="eingebaut.setPlaying(true);">play</button>
   </body>
 </html>

@@ -265,9 +265,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           case "src":
             return (typeof(value)!='undefined' ? $this.mischung.setSourceURL(value,param) : $this.mischung.getSourceURL());
           case "playing":
-            return (typeof(value)!='undefined' ? (value ? $this.mischung.play() : $this.mischung.pause()) : $this.mischung.getPlaying());
+            return (typeof(value)!='undefined' ? (value ? $this.mischung.play() : $this.mischung.stop()) : $this.mischung.getPlaying());
           case "paused":
-            return (typeof(value)!='undefined' ? (value ? $this.mischung.pause() : $this.mischung.play()) : !$this.mischung.getPlaying());
+            return (typeof(value)!='undefined' ? (value ? $this.mischung.stop() : $this.mischung.play()) : !$this.mischung.getPlaying());
           case "ended":
             return (typeof(value)!='undefined' ? $this.mischung.setEnded(value) : !$this.mischung.getEnded());
           case "currentTime":
@@ -293,7 +293,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       $this.setReady(true);
       $this.callback('loaded');
       $this.callback('ready');
-      
     } else {
       console.log('Invalid display device');
       return false;
