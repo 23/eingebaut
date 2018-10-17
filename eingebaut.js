@@ -263,25 +263,25 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           case "isLive":
             return;
           case "src":
-            return (param ? $this.mischung.setSourceURL(param) : $this.mischung.getSourceURL());
+            return (typeof(value)!='undefined' ? $this.mischung.setSourceURL(value,param) : $this.mischung.getSourceURL());
           case "playing":
-            return (param ? $this.mischung.setPlaying(param) : $this.mischung.getPlaying());
+            return (typeof(value)!='undefined' ? (value ? $this.mischung.play() : $this.mischung.pause()) : $this.mischung.getPlaying());
           case "paused":
-            return (param ? $this.mischung.setPlaying(!param) : !$this.mischung.getPlaying());
+            return (typeof(value)!='undefined' ? (value ? $this.mischung.pause() : $this.mischung.play()) : !$this.mischung.getPlaying());
           case "ended":
-            return (param ? $this.mischung.setEnded(param) : !$this.mischung.getEnded());
+            return (typeof(value)!='undefined' ? $this.mischung.setEnded(value) : !$this.mischung.getEnded());
           case "currentTime":
-            return (param ? $this.mischung.setCurrentTime(param) : $this.mischung.getCurrentTime());
+            return (typeof(value)!='undefined' ? $this.mischung.setCurrentTime(value) : $this.mischung.getCurrentTime());
           case "seeking":
-            return (param ? $this.mischung.setSeeking(param) : $this.mischung.getSeeking());
+            return (typeof(value)!='undefined' ? $this.mischung.setSeeking(value) : $this.mischung.getSeeking());
           case "stalled":
-            return (param ? $this.mischung.setStalled(param) : $this.mischung.getStalled());
+            return (typeof(value)!='undefined' ? $this.mischung.setStalled(value) : $this.mischung.getStalled());
           case "duration":
-            return (param ? $this.mischung.setDuration(param) : $this.mischung.getDuration());
+            return (typeof(value)!='undefined' ? $this.mischung.setDuration(value) : $this.mischung.getDuration());
           case "bufferTime":
             return $this.mischung.getBufferTime();
           case "volume":
-            return (param ? $this.mischung.setVolume(param) : $this.mischung.getVolume());
+            return (typeof(value)!='undefined' ? $this.mischung.setVolume(value) : $this.mischung.getVolume());
           }
         },
         call:function(){},
