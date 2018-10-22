@@ -14,7 +14,8 @@
      var eingebaut = new Eingebaut($('#video'), 'mischung', '', function(event){
        if(event=='ready') {
          eingebaut.setSource('../mischung/samples/kate.misch');
-         eingebaut.setPlaying(true);
+         // setPlaying should be intitated by user action/gesture
+         // eingebaut.setPlaying(true);
        }
        console.debug(event);
      });
