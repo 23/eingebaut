@@ -7,6 +7,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   $this.swfLocation = swfLocation||'/eingebaut/lib/FlashFallback/EingebautDebug.swf';
   $this._callback = callback||function(){};
   $this.fullscreenContext = 'document'; // can be overwritten to 'video' if you prefer only the video to be in full screen, not the entire document
+  $this.hlsjsConfig = {};
 
   // Options with defaults
   $this.options = $.extend({
@@ -319,7 +320,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       if(!delay) {
         if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
           $this.setReady(false);
-          $this.hls = new Hls();
+          $this.hls = new Hls($this.hlsjsConfig);
           $this.hls.loadSource(source);
           $this.hls.attachMedia($this.video[0]);
           $this.video[0].load();
