@@ -527,6 +527,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }catch(e){}
   };
   $this.getVolume = function() {
+    if($this.video.prop('muted')) {return 0;}
     return $this.video.prop('volume');
   };
   $this.getIsLive = function() {
