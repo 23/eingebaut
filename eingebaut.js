@@ -39,6 +39,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     if($this.switching && (e=='canplay'||e=='play')) $this.switching = false;
     // Handle floating poster, mostly compensating for Chrome not always showing the video poster
     // but also enabling a mode where the thumbnail is displayed when the video ends
+    console.log('cb: ', e);
     switch(e) {
       case 'play':
       case 'playing':
@@ -240,13 +241,16 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       swfobject.embedSWF($this.swfLocation, 'FlashFallback', '100%', '100%', '10.1.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'});
 
     } else if ($this.displayDevice=='mischung') {
-      if(!Mischung) {
+      if(typeof(Mischung)=='undefined') {
         console.log('Mischung library is required.');
         return false;
       }
 
-      $this.mischung = new Mischung($this.container[0], function(event){
-        console.log('mischung callback, event =', event);
+      var mischungContainer = $(document.createElement('div'));
+      mischungContainer.css({width:'100%', height:'100%', visibility:'hidden'})
+      $this.container.append(mischungContainer);
+      $this.mischung = new Mischung(mischungContainer[0], function(event){
+        //console.log('mischung callback, event =', event);
       });
 
       // Emulate enough of the jQuery <video> object for our purposes
@@ -258,7 +262,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           pause:function(){$this.video.prop('playing', false);}
         },
         prop:function(key,value,param){
-          console.log('mischung prop', key,value,param);
           switch(key) {
           case "poster":
           case "isLive":
@@ -270,7 +273,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           case "paused":
             return (typeof(value)!='undefined' ? (value ? $this.mischung.pause() : $this.mischung.play()) : !$this.mischung.getPlaying());
           case "ended":
-            return (typeof(value)!='undefined' ? $this.mischung.setEnded(value) : !$this.mischung.getEnded());
+            return (typeof(value)!='undefined' ? $this.mischung.setEnded(value) : $this.mischung.getEnded());
           case "currentTime":
             return (typeof(value)!='undefined' ? $this.mischung.setCurrentTime(value) : $this.mischung.getCurrentTime());
           case "seeking":
@@ -288,9 +291,18 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         call:function(){},
         element:$this.container.find('video')
       };
-      $this.container.css({position:'relative'});
-      $this.video.element.css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
 
+      for (var eventName of 'error loaded ready canplay progress timeupdate seeked play playing pause loadedmetadata ended volumechange'.split(' ')) {
+        (function(eventName){
+          $this.mischung['on'+eventName] = function(e){
+            $this.callback(eventName, e);
+            
+            if(eventName=='playing'||eventName=='play') mischungContainer.css({visibility:'visible'});
+            if(eventName=='playing') $this.callback('play', e);
+          };
+        })(eventName);
+      }
+      
       $this.setReady(true);
       $this.callback('loaded');
       $this.callback('ready');
