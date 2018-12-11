@@ -39,7 +39,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     if($this.switching && (e=='canplay'||e=='play')) $this.switching = false;
     // Handle floating poster, mostly compensating for Chrome not always showing the video poster
     // but also enabling a mode where the thumbnail is displayed when the video ends
-    console.log('cb: ', e);
     switch(e) {
       case 'play':
       case 'playing':
