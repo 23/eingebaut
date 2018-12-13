@@ -1,0 +1,32 @@
+{
+	"version": 0.2,
+
+	"canvas":{
+		"width":640,
+		"height":360
+	},
+
+	"poster": "/pv/client-side/assets/kate.png",
+
+	"objects": [
+		{
+			"id": 1,
+			"type": "media",
+			"duration": 10.006,
+			"uri": "/pv/client-side/assets/vid1/v4/0.mp4"
+		}
+	],
+
+	"timeline": [
+		{
+			"id": 1,
+			"start_time": [0, 0],
+			"duration": 10.006,
+			"x": 0,
+			"y": 0,
+
+			"object": 1
+		}
+	]
+
+}

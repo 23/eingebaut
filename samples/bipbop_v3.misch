@@ -1,0 +1,131 @@
+{
+  "version": 0.2,
+  "canvas": {
+    "height": 360,
+    "width": 640
+  },
+  "objects": [
+    {
+      "duration": 6.0,
+      "id": 1,
+      "type": "media",
+      "uri": "/assets/bipbop_v3/mp4/0.mp4"
+    },
+    {
+      "duration": 6.0,
+      "id": 2,
+      "type": "media",
+      "uri": "/assets/bipbop_v3/mp4/1.mp4"
+    },
+    {
+      "duration": 6.0,
+      "id": 3,
+      "type": "media",
+      "uri": "/assets/bipbop_v3/mp4/2.mp4"
+    },
+    {
+      "duration": 6.0,
+      "id": 4,
+      "type": "media",
+      "uri": "/assets/bipbop_v3/mp4/3.mp4"
+    },
+    {
+      "duration": 6.0,
+      "id": 5,
+      "type": "media",
+      "uri": "/assets/bipbop_v3/mp4/4.mp4"
+    },
+    {
+      "duration": 6.0,
+      "id": 6,
+      "type": "media",
+      "uri": "/assets/bipbop_v3/mp4/5.mp4"
+    },
+    {
+      "duration": 6.0,
+      "id": 7,
+      "type": "media",
+      "uri": "/assets/bipbop_v3/mp4/6.mp4"
+    }
+  ],
+  "poster": "/assets/bipbop.png",
+  "timeline": [
+    {
+      "duration": 6.0,
+      "id": 101,
+      "object": 1,
+      "start_time": [
+        0,
+        0
+      ],
+      "x": 0,
+      "y": 0
+    },
+    {
+      "duration": 6.0,
+      "id": 102,
+      "object": 2,
+      "start_time": [
+        101,
+        "100%"
+      ],
+      "x": 0,
+      "y": 0
+    },
+    {
+      "duration": 6.0,
+      "id": 103,
+      "object": 3,
+      "start_time": [
+        102,
+        "100%"
+      ],
+      "x": 0,
+      "y": 0
+    },
+    {
+      "duration": 6.0,
+      "id": 104,
+      "object": 4,
+      "start_time": [
+        103,
+        "100%"
+      ],
+      "x": 0,
+      "y": 0
+    },
+    {
+      "duration": 6.0,
+      "id": 105,
+      "object": 5,
+      "start_time": [
+        104,
+        "100%"
+      ],
+      "x": 0,
+      "y": 0
+    },
+    {
+      "duration": 6.0,
+      "id": 106,
+      "object": 6,
+      "start_time": [
+        105,
+        "100%"
+      ],
+      "x": 0,
+      "y": 0
+    },
+    {
+      "duration": 6.0,
+      "id": 107,
+      "object": 7,
+      "start_time": [
+        106,
+        "100%"
+      ],
+      "x": 0,
+      "y": 0
+    }
+  ]
+}

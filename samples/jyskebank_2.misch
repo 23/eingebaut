@@ -1,0 +1,109 @@
+{
+	"version": 0.2,
+
+	"canvas":{
+		"width":1920,
+		"height":1080
+	},
+
+	"poster": "/pv/client-side/assets/jyskebank/poster.png",
+
+	"objects": [
+		{
+			"id": 1,
+			"type": "media",
+			"uri": "/pv/client-side/assets/jyskebank/Advisor2.mp4",
+			"duration": 53.833
+		},
+		{
+			"id": 2,
+			"type": "media",
+			"uri": "/pv/client-side/assets/jyskebank/houses_trimmed.mp4",
+			"duration": 4.9
+		},
+		{
+			"id": 3,
+			"type": "image",
+			"uri": "/pv/client-side/assets/jyskebank/jyske-bank-boxed-no-text-cropped.png"
+		},
+		{
+			"id": 4,
+			"type": "media",
+			"uri": "/pv/client-side/assets/jyskebank/extra material.mp4",
+			"duration": 4
+		},
+		{
+			"id": 5,
+			"type": "image",
+			"uri": "/pv/client-side/assets/jyskebank/text_2.svg"
+		},
+		{
+			"id": 6,
+			"type": "image",
+			"uri": "/pv/client-side/assets/jyskebank/last.png"
+		}
+	],
+
+	"timeline": [
+		{
+			"id": 101,
+			"y": 0,
+			"x": 0,
+			"start_time": [0, 0],
+			"duration": 53.833,
+
+			"object": 1
+		},
+		{
+			"id": 102,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0,0],
+			"duration": 4.9,
+			"use_audio": false,
+
+			"object": 2
+		},
+		{
+			"id": 103,
+			"x": 224,
+			"y": 789,
+			"z": 1,
+			"start_time": [101, 6],
+			"duration": 4,
+
+			"object": 3
+		},
+		{
+			"id": 105,
+			"x": 224,
+			"y": 789,
+			"z": 2,
+			"start_time": [101, 6],
+			"duration": 4,
+
+			"object": 5
+		},
+		{
+			"id": 104,
+			"x": 0,
+			"y": 0,
+			"start_time": [102, 12],
+			"duration": 4,
+			"use_audio": false,
+
+			"object": 4
+		},
+		{
+			"id": 106,
+			"x": 0,
+			"y": 610,
+			"z": 1,
+			"start_time": [101, 47],
+			"duration": 5,
+
+			"object": 6
+		}
+	]
+}

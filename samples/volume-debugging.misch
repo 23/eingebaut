@@ -1,0 +1,49 @@
+{
+  	"version": 0.2,
+
+	"canvas":{
+		"width":640,
+		"height":360
+	},
+	"poster": "/pv/client-side/assets/steffen/poster.png",
+
+	"objects": [
+		{
+			"id": 101,
+			"type": "media",
+			"uri": "/pv/client-side/assets/steffen/head.mp4",
+			"duration": 325.0
+		},
+		{
+			"id": 102,
+			"type": "media",
+			"uri": "/pv/client-side/assets/bipbop_orig.mp4",
+			"duration": 37.266666666666666
+		}
+	],
+	"timeline": [
+		{
+			"id": 1,
+			"object": 101,
+			"y": 0,
+			"x": 0,
+			"width": 640,
+			"height": 360,
+
+			"start_time": [0, 0],
+			"duration": 325
+		},
+		{
+			"id": 2,
+			"object": 102,
+			"y": 250,
+			"x": 500,
+			"width": 64,
+			"height": 72,
+
+			"use_audio": false,
+			"start_time": [0, 0],
+			"duration": 37.266666666666666
+		}
+	]
+}

@@ -1,0 +1,116 @@
+{
+  	"version": 0.2,
+
+	"canvas":{
+		"width":640,
+		"height":360
+	},
+	"poster": "/pv/client-side/assets/steffen/poster.png",
+
+	"objects": [
+		{
+			"id": 1,
+			"type": "media",
+			"uri": "/pv/client-side/assets/steffen/head.mp4",
+			"duration": 325.0
+		},
+		{
+			"id": 2,
+			"type": "media",
+			"uri": "/pv/client-side/assets/steffen/dummy_screen_ts.mp4",
+			"duration": 325.0
+		}
+	],
+	"timeline": [
+		{
+			"id": 1,
+			"object": 1,
+			"y": 0,
+			"x": 0,
+			"start_time": [0, 0],
+			"duration": 325
+		},
+		{
+			"id": 1002,
+			"object": 2,
+			"y": 360,
+			"x": 640,
+			"start_time": [0, 0],
+			"duration": 325
+		},
+		{
+			"id": 101,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0, 25],
+			"duration": 5
+		},
+		{
+			"id": 2,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0, 44],
+			"duration": 22
+		},
+		{
+			"id": 3,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0, 74],
+			"duration": 20
+		},
+		{
+			"id": 4,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0, 139],
+			"duration": 11
+		},
+		{
+			"id": 5,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0, 174],
+			"duration": 2
+		},
+		{
+			"id": 6,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0, 182],
+			"duration": 10
+		},
+		{
+			"id": 7,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"z": 1,
+			"start_time": [0, 200],
+			"duration": 125
+		},
+		{
+			"id": 8,
+			"object": 1,
+			"y": 270,
+			"x": 40,
+			"z": 2,
+			"width": 80,
+			"height": 45,
+			"start_time": [0, 200],
+			"duration": 133
+		}
+	]
+}

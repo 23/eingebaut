@@ -1,0 +1,195 @@
+{
+	"version": 0.2,
+
+	"canvas":{
+		"width":640,
+		"height":360
+	},
+
+	"poster": "/assets/kate.png",
+
+	"objects": [
+		{
+			"id": 1,
+			"type": "media",
+			"uri": "/assets/vid1/v4/0.mp4"
+		},
+		{
+			"id": 2,
+			"type": "media",
+			"uri": "/assets/vid1/v4/1.mp4"
+		},
+		{
+			"id": 3,
+			"type": "media",
+			"uri": "/assets/vid1/v4/2.mp4"
+		},
+		{
+			"id": 40,
+			"type": "media",
+			"uri": "/assets/vid1/v4/6.mp4"
+		},
+		{
+			"id": 41,
+			"type": "image",
+			"uri": "/assets/green-approved-stamp-1-1024x772.png"
+		},
+		{
+			"id": 4,
+			"type": "media",
+			"uri": "/assets/vid1/v4/3.mp4"
+		},
+		{
+			"id": 5,
+			"type": "media",
+			"uri": "/assets/vid1/v4/4.mp4"
+		},
+		{
+			"id": 6,
+			"type": "media",
+			"uri": "/assets/vid1/v4/5.mp4"
+		},
+
+		{
+			"id": 7,
+			"type": "media",
+			"uri": "/assets/vid1/v4/6.mp4"
+		},
+		{
+			"id": 8,
+			"type": "media",
+			"uri": "/assets/vid1/v4/7.mp4"
+		},
+		{
+			"id": 9,
+			"type": "media",
+			"uri": "/assets/vid1/v4/8.mp4"
+		},
+		{
+			"id": 999,
+			"type": "image",
+			"uri": "/assets/theend_background.svg"
+		}
+	],
+
+	"timeline": [
+		{
+			"id": 1,
+			"start_time": [0, 0],
+			"duration": 10.006,
+			"x": 0,
+			"y": 0,
+
+			"object": 1
+		},
+		{
+			"id": 2,
+			"start_time": [1, "100%"],
+			"duration": 3.222,
+			"x": 0,
+			"y": 0,
+
+			"object": 2
+		},
+		{
+			"id": 3,
+			"start_time": [2, "100%"],
+			"duration": 10.04,
+			"x": 0,
+			"y": 0,
+
+			"object": 3
+		},
+		{
+			"id": 40,
+			"start_time": [1, 2],
+			"duration": 6,
+			"x": 20,
+			"y": 20,
+			"z": 1,
+			"width": 512,
+			"height": 288,
+			"use_audio" : false,
+
+			"object": 40
+		},
+		{
+			"id": 41,
+			"start_time": [1, 4],
+			"duration": 14,
+			"x": 350,
+			"y": 20,
+			"z": 2,
+			"width": 256,
+			"height": 193,
+
+			"object": 41
+		},
+		{
+			"id": 4,
+			"start_time": [3, "100%"],
+			"duration": 4.680,
+			"x": 0,
+			"y": 0,
+
+			"object": 4
+		},
+		{
+			"id": 5,
+			"start_time": [4, "100%"],
+			"duration": 10.006,
+			"x": 0,
+			"y": 0,
+
+			"object": 5
+		},
+		{
+			"id": 6,
+			"start_time": [5, "100%"],
+			"duration": 8.619,
+			"x": 0,
+			"y": 0,
+
+			"object": 6
+		},
+
+		{
+			"id": 7,
+			"start_time": [6, "100%"],
+			"duration": 10.04,
+			"x": 0,
+			"y": 0,
+
+			"object": 7
+		},
+		{
+			"id": 8,
+			"start_time": [7, "100%"],
+			"duration": 10.04,
+			"x": 0,
+			"y": 0,
+
+			"object": 8
+		},
+		{
+			"id": 9,
+			"start_time": [8, "100%"],
+			"duration": 1.04,
+			"x": 0,
+			"y": 0,
+
+			"object": 9
+		},
+		{
+			"id": 10,
+			"start_time": [9, "100%"],
+			"duration": 5,
+			"x": 0,
+			"y": 0,
+
+			"object": 999
+		}
+
+	]
+
+}

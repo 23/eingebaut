@@ -1,0 +1,127 @@
+{
+	"canvas":{
+		"width":640,
+		"height":360
+	},
+
+	"poster": "/assets/kate.png",
+
+	"objects": [
+		{
+			"id": 1,
+			"start_time": [0, 0],
+			"duration": 10.006,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/0.mp4"
+		},
+		{
+			"id": 2,
+			"start_time": [1, "100%"],
+			"duration": 3.222,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/1.mp4"
+		},
+		{
+			"id": 3,
+			"start_time": [2, "100%"],
+			"duration": 10.04,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/2.mp4"
+		},
+		{
+			"id": 40,
+			"start_time": [1, 2],
+			"duration": 6,
+			"x": 20,
+			"y": 20,
+			"width": 256,
+			"height": 144,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/6.mp4",
+			"use_audio" : false
+		},
+		{
+			"id": 41,
+			"start_time": [1, 4],
+			"duration": 14,
+			"x": 350,
+			"y": 20,
+			"width": 133.33,
+			"height": 133.33,
+
+			"type": "image",
+			"uri": "/assets/Stopwatch.svg"
+		},
+		{
+			"id": 4,
+			"start_time": [3, "100%"],
+			"duration": 4.680,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/3.mp4"
+		},
+		{
+			"id": 5,
+			"start_time": [4, "100%"],
+			"duration": 10.006,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/4.mp4"
+		},
+		{
+			"id": 6,
+			"start_time": [5, "100%"],
+			"duration": 8.619,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/5.mp4"
+		},
+
+		{
+			"id": 7,
+			"start_time": [6, "100%"],
+			"duration": 10.04,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/6.mp4"
+		},
+		{
+			"id": 8,
+			"start_time": [7, "100%"],
+			"duration": 10.04,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/7.mp4"
+		},
+		{
+			"id": 9,
+			"start_time": [8, "100%"],
+			"duration": 1.04,
+			"x": 0,
+			"y": 0,
+
+			"type": "media",
+			"uri": "/assets/vid1/v4/8.mp4"
+		}
+	]
+}

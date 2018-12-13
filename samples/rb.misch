@@ -1,0 +1,86 @@
+{
+  	"version": 0.2,
+
+	"canvas":{
+		"width":640,
+		"height":360
+	},
+	"poster": "/pv/client-side/assets/rgb/poster.png",
+
+	"objects": [
+		{
+			"id": 1,
+			"type": "media",
+			"uri": "/pv/client-side/assets/rgb/red_ts.mp4",
+			"duration": 30.0
+		},
+		{
+			"id": 2,
+			"type": "media",
+			"uri": "/pv/client-side/assets/rgb/blue_ts.mp4",
+			"duration": 30.0
+		}
+	],
+	"timeline": [
+		{
+			"id": 1,
+			"object": 1,
+			"y": 0,
+			"x": 0,
+			"start_time": [0, 0],
+			"duration": 4
+		},
+		{
+			"id": 101,
+			"object": 2,
+			"y": 640,
+			"x": 360,
+			"start_time": [0, 0],
+			"duration": 2
+		},
+		{
+			"id": 2,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"start_time": [1, "100%"],
+			"duration": 4
+		},
+		{
+			"id": 3,
+			"object": 1,
+			"y": 0,
+			"x": 0,
+			"start_time": [2, "100%"],
+			"duration": 4
+		},
+		{
+			"id": 4,
+			"object": 2,
+			"y": 0,
+			"x": 0,
+			"start_time": [3, "100%"],
+			"duration": 4
+		},
+		{
+			"id": 5,
+			"object": 1,
+			"y": 0,
+			"x": 0,
+			"width": 320,
+			"height": 360,
+			"start_time": [4, "100%"],
+			"duration": 4
+		},
+		{
+			"id": 6,
+			"object": 2,
+			"y": 0,
+			"x": 320,
+			"width": 320,
+			"height": 360,
+			"start_time": [4, "100%"],
+			"duration": 4
+		}
+	]
+}

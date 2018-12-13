@@ -1,0 +1,18 @@
+{
+	"canvas":{
+		"width":1920,
+		"height":1080
+	},
+
+	"objects": [
+		{
+			"id": 1,
+			"type": "media",
+			"y": 0,
+			"x": 0,
+			"uri": "/assets/jyskebank/assets/Advisor 1.mp4",
+			"start_time": [0, 0],
+			"duration": 37.266666666666666
+		}
+	]
+}

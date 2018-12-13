@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
     <!-- External dependencies: Lean on jQuery & SWFObject -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="../mischung/src/mischung.js"></script>
+    <script src="../pv/client-side/libs/mischung/build/mischungBundle.js"></script>
 
     <!-- Eingebaut itself -->
     <script src="eingebaut.js"></script>
@@ -11,19 +12,19 @@
   <body>
     <div id="video" style="width:640px; height:360px; background-color:black;"></div>
     <script>
-     var eingebaut = new Eingebaut($('#video'), 'mischung', '', function(event){
+     window.eingebaut = new Eingebaut($('#video'), 'mischung', '', function(event){
        if(event=='ready') {
-         eingebaut.setSource('../mischung/samples/kate.misch');
+         eingebaut.setSource('samples/kate.misch');
          // setPlaying should be intitated by user action/gesture
          // eingebaut.setPlaying(true);
        }
        console.debug(event);
      });
-     eingebaut.load();
+     window.eingebaut.load();
     </script>
 
 
-    <button onclick="eingebaut.setPlaying(false);">pause</button>
-    <button onclick="eingebaut.setPlaying(true);">play</button>
+    <button onclick="window.eingebaut.setPlaying(false);">pause</button>
+    <button onclick="window.eingebaut.setPlaying(true);">play</button>
   </body>
 </html>
