@@ -291,17 +291,15 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         element:$this.container.find('video')
       };
 
-      for (var eventName of 'error loaded ready canplay progress timeupdate seeked play playing pause loadedmetadata ended volumechange'.split(' ')) {
-        (function(eventName){
+      $.each('error loaded ready canplay progress timeupdate seeked play playing pause loadedmetadata ended volumechange'.split(' '), function(index, eventName){
           $this.mischung['on'+eventName] = function(e){
             $this.callback(eventName, e);
-            
+
             if(eventName=='playing'||eventName=='play') mischungContainer.css({visibility:'visible'});
             if(eventName=='playing') $this.callback('play', e);
           };
-        })(eventName);
-      }
-      
+        });
+
       $this.setReady(true);
       $this.callback('loaded');
       $this.callback('ready');
