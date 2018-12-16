@@ -261,6 +261,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           pause:function(){$this.video.prop('playing', false);}
         },
         prop:function(key,value,param){
+          //console.log('prop', key,value,param);
           switch(key) {
           case "poster":
           case "isLive":
@@ -268,9 +269,13 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           case "src":
             return (typeof(value)!='undefined' ? $this.mischung.setSourceURL(value,param) : $this.mischung.getSourceURL());
           case "playing":
-            return (typeof(value)!='undefined' ? (value ? $this.mischung.play() : $this.mischung.pause()) : $this.mischung.getPlaying());
           case "paused":
-            return (typeof(value)!='undefined' ? (value ? $this.mischung.pause() : $this.mischung.play()) : !$this.mischung.getPlaying());
+            var isPlaying = $this.mischung.getPlaying() && $this.mischung.state!='paused' && $this.mischung.state!='ended' && $this.mischung.state!='error';
+            if(key=='playing') {
+              return (typeof(value)!='undefined' ? (value ? $this.mischung.play() : $this.mischung.pause()) : isPlaying);
+            } else {
+              return (typeof(value)!='undefined' ? (value ? $this.mischung.pause() : $this.mischung.play()) : !isPlaying);
+            }
           case "ended":
             return (typeof(value)!='undefined' ? $this.mischung.setEnded(value) : $this.mischung.getEnded());
           case "currentTime":
