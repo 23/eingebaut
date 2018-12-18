@@ -27,5 +27,38 @@
 
     <button onclick="window.eingebaut.setPlaying(false);">pause</button>
     <button onclick="window.eingebaut.setPlaying(true);">play</button>
+
+    <div>
+      <input type="range" id="timeSlider" name="" min="0" max="100" step="0.1" style="width:640px;"/>
+    </div>
+    <script>
+      $('#timeSlider').on('change', function() {
+        if (typeof window.eingebaut.getDuration() !== 'number') return;
+
+        var val = $('#timeSlider').val();
+        var ct = val / 100.0 * window.eingebaut.getDuration();
+        window.eingebaut.setCurrentTime(ct);
+        console.log('set current time to', ct);
+      });
+
+      function updateTimeSlider() {
+        if (typeof window.eingebaut.getDuration() !== 'number') return;
+        if (typeof window.eingebaut.getCurrentTime() !== 'number') return;
+
+        var ct = window.eingebaut.getCurrentTime();
+        var dur = window.eingebaut.getDuration();
+
+        var val = ct / dur * 100.0;
+        val = Math.min(val, 100);
+
+        var cur_val = $('#timeSlider').val();
+
+        if(Math.abs(cur_val - val) > 5) return;
+
+        $('#timeSlider').val(val);
+      }
+
+      window.setInterval(updateTimeSlider, 1000/10);
+    </script>
   </body>
 </html>
