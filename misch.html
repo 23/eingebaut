@@ -53,11 +53,14 @@
 
         var cur_val = $('#timeSlider').val();
 
+        // if(sliderUpdatedTime != null && (Date.now() - sliderUpdatedTime) > 10000)
+        //   return;
         if(Math.abs(cur_val - val) > 5) return;
 
         $('#timeSlider').val(val);
       }
 
+      $('#timeSlider').val(0);
       window.setInterval(updateTimeSlider, 1000/10);
     </script>
   </body>
