@@ -48,6 +48,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       case 'ended':
         if($this.floatingPoster&&$this.showPosterOnEnd) $this.floatingPoster.show();
         break;
+      case 'autoplayfailed':
+        if($this.floatingPoster) $this.floatingPoster.show();
+        break;
       case 'leavefullscreen':
       case 'enterfullscreen':
         $this.callback('fullscreenchange');
