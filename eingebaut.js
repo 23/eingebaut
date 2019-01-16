@@ -251,7 +251,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       var mischungContainer = $(document.createElement('div'));
       mischungContainer.css({width:'100%', height:'100%', visibility:'hidden'})
       $this.container.append(mischungContainer);
-      $this.mischung = new Mischung(mischungContainer[0], function(event){
+      $this.mischung = new Mischung.Mischung(mischungContainer[0], function(event){
         //console.log('mischung callback, event =', event);
       });
 
