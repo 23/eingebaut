@@ -9,7 +9,7 @@
     <!-- External dependencies: Lean on jQuery & SWFObject -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="../pv/client-side/libs/mischung/build/mischungBundle.js"></script>
-    <script src="../pv/client-side/libs/mischung/node_modules/@babel/polyfill/dist/polyfill.js"></script>
+    <!-- <script src="../pv/client-side/libs/mischung/node_modules/@babel/polyfill/dist/polyfill.js"></script> -->
 
     <!-- Eingebaut itself -->
     <script src="eingebaut.js"></script>
@@ -20,6 +20,7 @@
      window.eingebaut = new Eingebaut($('#video'), 'mischung', '', function(event){
        if(event=='ready') {
          eingebaut.setSource('samples/kate.misch');
+         // eingebaut.setSource('test-videos/ako.misch');
          // setPlaying should be intitated by user action/gesture
          // eingebaut.setPlaying(true);
        }

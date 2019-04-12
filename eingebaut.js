@@ -1,3 +1,5 @@
+/* eslint-disable */ 
+
 var Eingebaut = function(container, displayDevice, swfLocation, callback, options){
   var $ = jQuery;
   var $this = this;
