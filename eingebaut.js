@@ -274,7 +274,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
             return (typeof(value)!='undefined' ? $this.mischung.setSourceURL(value,param) : $this.mischung.getSourceURL());
           case "playing":
           case "paused":
-            var isPlaying = $this.mischung.getPlaying() && $this.mischung.state!='paused' && $this.mischung.state!='ended' && $this.mischung.state!='error';
+            var isPlaying = ($this.mischung.state=='playing' || $this.mischung.getPlaying()) && $this.mischung.state!='paused' && $this.mischung.state!='ended' && $this.mischung.state!='error';
             if(key=='playing') {
               return (typeof(value)!='undefined' ? (value ? $this.mischung.play() : $this.mischung.pause()) : isPlaying);
             } else {
