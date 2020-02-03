@@ -515,10 +515,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         var playPromise = $this.video[0].play();
         if (playPromise !== undefined && playPromise['catch'] !== undefined) {
           playPromise['catch'](function(err){
-            // Auto-play was prevented, see https://webkit.org/blog/7734/auto-play-policy-changes-for-macos/
-            $this.autoPlayHasFailed = true;
-            $this.setPlaying(false);
-            $this.callback('autoplayfailed');
+            if(err.name=='NotAllowedError') {
+              // Auto-play was prevented, see https://webkit.org/blog/7734/auto-play-policy-changes-for-macos/
+              $this.autoPlayHasFailed = true;
+              $this.setPlaying(false);
+              $this.callback('autoplayfailed');
+            }
           });
         }
       }, 1);
