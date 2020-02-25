@@ -333,6 +333,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   $this.setSource = function(source, startTime, poster, delay) {
     _delayedSource = null;
     $this.switching = true;
+    if($this.hls && $this.hls.destroy) $this.hls.destroy();
     $this.hls = null;
     if ($this.displayDevice=='html5') {
       if(!delay) {
