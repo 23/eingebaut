@@ -69,7 +69,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     $this.displayDevice = displayDevice;
     $this.playbackInited = false;
     if ($this.displayDevice=='html5') {
-      if(/MSIE ([6-9]|10)/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
+      if(/MSIE ([6-9])/.test(navigator.userAgent) && !/Windows.Phone/.test(navigator.userAgent)) {
         // Internet Explorer 10 does support HTML5 video, but with a number of caveats.
         // There are notable bugs in the playback quality. And support for Byte-Range
         // scrubbing is non-existant. Here, we simply opt out and fall back to Flash,
@@ -165,84 +165,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       $this.callback('timeupdate');
       $this.supportsVolumeChange();
     } else if ($this.displayDevice=='flash') {
-      if(!swfobject.hasFlashPlayerVersion('10.1.0')) {
-        return false;  // no flash support
-      }
-
-      // Flash's ExternalInterface is know to exhibit issues with security modes in Safari 6.1
-      // In these case, we want to force display device to be HTML5, even when Flash is available.
-      try {
-        var m = navigator.appVersion.match(/Version\/(\d+.\d+) Safari/);
-        if(m && parseFloat(m[1])>=6.1) return false;
-      }catch(e){}
-
-      // Flash Display
-      window.FlashFallbackCallback = function(e){
-        if(e=='fullscreenprompt') $this.blind.hide();
-        if(e=='clearfullscreenprompt') $this.blind.show();
-        if(e=='flashloaded'&&!$this.ready) {
-          $this.setReady(true);
-          $this.callback('flashloaded');
-          $this.callback('loaded');
-          $this.callback('ready');
-          $this.supportsVolumeChange();
-        } else {
-          $this.callback(e);
-        }
-      };
-
-      // Emulate enough of the jQuery <video> object for our purposes
-      $this.video = {
-        queue:[],
-        0: {
-          canPlayType: function(t){return t=='video/mp4; codecs="avc1.42E01E"' || t=='application/vnd.apple.mpegURL';},
-          play:function(){$this.video.call('setPlaying', true);},
-          pause:function(){$this.video.call('setPlaying', false);}
-        },
-        prop:function(key,value,param){
-          if(key=='src') key='source';
-          key = key.substring(0,1).toUpperCase() + key.substring(1);
-          try{
-            return (typeof(value)!='undefined' ? $this.video.call('set' + key, value, param): $this.video.call('get' + key));
-          }catch(e){
-            return "";
-          }
-        },
-        call:function(method,arg1,arg2){
-          $this.video.element = document['FlashFallback']||window['FlashFallback'];
-          if($this.video.element) {
-            if(typeof(arg2)!='undefined') {
-              return $this.video.element[method](arg1,arg2);
-            } else if(typeof(arg1)!='undefined') {
-              return $this.video.element[method](arg1);
-            } else {
-              return $this.video.element[method]();
-            }
-          } else {
-            if($this.video.element) {
-              // Run queue
-              $.each($this.video.queue, function(i,q){
-                $this.video.call(q[0],q[1],q[2]);
-              });
-              $this.video.queue = [];
-              // Run the calling method
-              $this.video.call(method,arg1,arg2);
-            } else {
-              // Enqueue
-              $this.video.queue.push([method,arg1,arg2]);
-            }
-          }
-        },
-        element:undefined
-      };
-
-      // Start the Flash application up using swfobject
-      // (if we should want to eliminate the swfobject dependency, that's doable:
-      //  make a simple <object> include with innerHTML after the containing object has been
-      //  placed in DOM. Only caveat is that classid must be set in IE, and not in other browsers.)
-      $this.container.prepend($(document.createElement('div')).attr({'id':'FlashFallback'}));
-      swfobject.embedSWF($this.swfLocation, 'FlashFallback', '100%', '100%', '10.1.0', '', {}, {allowscriptaccess:'always', allowfullscreen:'true', wmode:'opaque', bgcolor:'#000000'}, {id:'FlashFallback', name:'FlashFallback'});
-
+      return false;  // no flash support
     } else if ($this.displayDevice=='mischung') {
       if(typeof(Mischung)=='undefined') {
         console.log('Mischung library is required.');
@@ -538,14 +461,10 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }
   };
   $this.canAutoplay = function(){
-    if($this.displayDevice == "flash"){
+    if(!/iPhone|iPad|iPod|Android/.test(navigator.userAgent) || $this.playbackInited) {
       return true;
-    }else if($this.displayDevice == "html5" || $this.displayDevice == "mischung"){
-      if(!/iPhone|iPad|iPod|Android/.test(navigator.userAgent) || $this.playbackInited) {
-        return true;
-      } else if( /iPhone|iPad|iPod/.test(navigator.userAgent) && parseInt( navigator.userAgent.match(/Version\/([0-9]*)\./)[1] ) > 9  && $this.video.get(0).muted ){
-        return true;
-      }
+    } else if( /iPhone|iPad|iPod/.test(navigator.userAgent) && parseInt( navigator.userAgent.match(/Version\/([0-9]*)\./)[1] ) > 9  && $this.video.get(0).muted ){
+      return true;
     }
     return false;
   };
@@ -673,24 +592,16 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   };
   $this.hasFullscreen = function() {
     if (_hasHTML5Fullscreen()) return true;
-    if ($this.displayDevice=='flash') return true;
     if ($this.displayDevice=='none') return false;
     return false;
   };
   $this.isFullscreen = function() {
-    if ($this.displayDevice=='flash' && !_hasHTML5Fullscreen()) {
-      return $this.video.prop('isFullscreen');
+    ve = $this.video[0];
+    if (document.fullscreenElement || document.webkitFullscreenElement || document.webkitIsFullScreen || document.mozFullScreenElement || document.msFullscreenElement) {
+      return true;
     } else {
-      ve = $this.video[0];
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.webkitIsFullScreen || document.mozFullScreenElement || document.msFullscreenElement) {
-        return true;
-      } else {
-        return false;
-      }
+      return false;
     }
-    //if($this.video[0].mozFullScreen) return $this.video[0].mozFullScreen();
-    //if($this.video[0].webkitFullscreenEnabled) return $this.video[0].webkitFullscreenEnabled();
-    //return false;
   };
   $(document).bind("fullscreenchange mozfullscreenchange webkitfullscreenchange MSFullscreenChange", function(e){
     var cb = $this.isFullscreen() ? "enterfullscreen" : "leavefullscreen";
@@ -723,9 +634,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       }
       return true;
     }
-    if ($this.displayDevice=='flash') {
-      return $this.video.call('enterFullscreen');
-    }
   };
   $this.leaveFullscreen = function() {
     if ($this.displayDevice=='html5' || _hasHTML5Fullscreen()) {
@@ -748,9 +656,6 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         return false;
       }
       return true;
-    }
-    if ($this.displayDevice=='flash') {
-      return $this.video.call('leaveFullscreen');
     }
   };
 
@@ -788,14 +693,11 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
 
   /* LOAD! */
   $this.load = function(){
+    if($this.displayDevice=='flash') $this.displayDevice = 'html5';
     if(!$this.loadDisplayDevice($this.displayDevice)) {
-      if(!$this.loadDisplayDevice($this.displayDevice=='html5' ? 'flash' : 'html5')) {
-        $this.displayDevice = 'none';
-      }
+      $this.displayDevice = 'none';
     }
-    if($this.displayDevice != 'flash') {
-      $this.callback('loaded');
-    }
+    $this.callback('loaded');
   }
   return $this;
 };
