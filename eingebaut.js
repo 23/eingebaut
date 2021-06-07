@@ -496,7 +496,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   $this.getStalled = function() {
     if ($this.displayDevice=='html5') {
       if($this.video.prop('ended')) return false;
-      var stalled = $this.stalled || ($this.video[0].readyState<3 && $this.video[0].currentTime>0) || ($this.getBufferTime()>0 && $this.video[0].currentTime>$this.getBufferTime()); // secondary measure for stalled
+      var stalled = $this.stalled || ($this.video[0].readyState<3 && $this.video[0].currentTime>0); // secondary measure for stalled
       return stalled && !$this.video[0].paused;
     } else {
       return $this.video.prop('stalled');
