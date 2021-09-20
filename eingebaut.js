@@ -101,7 +101,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         .bind('error load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough webkitbeginfullscreen webkitendfullscreen', function(e){
           // Handle stalled property (which is basically "waiting")
           if(e.type=='waiting') $this.stalled = true;
-          if(e.type=='playing'||e.type=='seeked') $this.stalled = false;
+          if(e.type=='playing'||e.type=='seeked'||e.type=='canplay') $this.stalled = false;
           if(e.type=='play'||e.type=='playing') $this.playbackInited = true;
           // In some cases, iOS fails to preload content correctly; the progress event indicates that load was done
           if(e.type=='progress') $this.progressFired = true;
