@@ -263,7 +263,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
           $this.setReady(false);
           $this.hls = new Hls($this.hlsjsConfig);
+          $this.hls.config.maxBufferLength = 30;
+          $this.hls.config.maxMaxBufferLength = 60;
           $this.hls.on(Hls.Events.ERROR, function(event, data) {
+            console.log('HLS.js Error:', event, data);
+            if(data.type=='mediaError' && data.details=='bufferFullError') {
+              $this.hls.recoverMediaError();
+              $this.setPlaying(true);
+            }
             $this.hlsjsFatalError = data.fatal;
           });
           $this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
