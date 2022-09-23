@@ -305,6 +305,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }
     return $this.video.prop('src')||'';
   };
+  $this.getPlaybackRate = function(){
+    return $this.video[0].playbackRate
+  }
+  $this.setPlaybackRate = function(rate) {
+    return $this.video[0].playbackRate = rate;
+  };
   $this.setPoster = function(poster) {
     if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'}).show();
     if ($this.displayDevice=='mischung') {
