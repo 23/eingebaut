@@ -305,6 +305,22 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     }
     return $this.video.prop('src')||'';
   };
+
+  $this.getPlaybackRate = function() {
+    return !!$this.video && !!$this.video[0] && !!$this.video[0].playbackRate
+      ? $this.video[0].playbackRate
+      : 1
+  };
+
+  $this.setPlaybackRate = function(rate) {
+      if (!!$this.video && !!$this.video[0] && !!$this.video[0].playbackRate) {
+        $this.video[0].playbackRate = rate;
+        return $this.video[0].playbackRate
+      }
+
+      return 1;
+  };
+
   $this.setPoster = function(poster) {
     if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'}).show();
     if ($this.displayDevice=='mischung') {
