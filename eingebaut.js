@@ -21,12 +21,17 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   $this.showPosterOnEnd = false;
   $this.playbackInited = false;
 
-  // A floating poster, to be shown on top of the video in some cases
-  // This is also handled in Flash, so since browser up to and including IE8
-  // don't support `background-size`, these are excluded entirely
-  if(navigator.appName != 'Microsoft Internet Explorer' || !/MSIE [1-8]\./.test(navigator.userAgent)) {
-    $this.floatingPoster = $(document.createElement('div'))
-      .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'}).hide();
+  if (navigator.appName != 'Microsoft Internet Explorer' || !/MSIE [1-8]\./.test(navigator.userAgent)) {
+    // A floating poster, to be shown on top of the video in some cases
+    $this.floatingPoster = $(document.createElement((/(MSIE|Trident)/.test(navigator.userAgent)) ? 'div' : 'img'));
+    if ($this.floatingPoster.is('img')) {
+      // We prefer doing this with <img crossorigin=anonymous> when object-fit is supported
+      $this.floatingPoster.attr({ crossOrigin: 'anonymous' }).css({ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }).hide();
+    } else {
+      // This is also handled in Flash, so since browser up to and including IE8
+      // don't support `background-size`, these are excluded entirely
+      $this.floatingPoster.css({ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundPosition: 'center center', backgroundSize: 'contain', backgroundRepeat: 'no-repeat' }).hide();
+    }
     $this.container.append($this.floatingPoster);
   }
 
@@ -306,8 +311,15 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     return $this.video.prop('src')||'';
   };
   $this.setPoster = function(poster) {
-    if($this.floatingPoster) $this.floatingPoster.css({backgroundImage:'url('+poster+')'}).show();
-    if ($this.displayDevice=='mischung') {
+    if ($this.floatingPoster) {
+      if ($this.floatingPoster.is('img')) {
+        $this.floatingPoster.attr({ src: poster });
+      } else {
+        $this.floatingPoster.css({ backgroundImage: 'url(' + poster + ')' })
+      }
+      $this.floatingPoster.show();
+    }
+    if ($this.displayDevice == 'mischung') {
       $this.video.poster = poster;
       $this.container.css({backgroundImage:'url('+poster+')', backgroundPosition:'center center', backgroundSize:'contain', backgroundRepeat:'no-repeat'});
     } else if ($this.displayDevice=='html5' && /Safari|iPhone/.test(navigator.userAgent) && !/(iPad|Android|Chrome)/.test(navigator.userAgent)) {
