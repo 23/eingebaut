@@ -272,6 +272,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           $this.hls = new Hls($this.hlsjsConfig);
           $this.hls.config.maxBufferLength = 30;
           $this.hls.config.maxMaxBufferLength = 60;
+          $this.callback("hlsjsload");
           $this.hls.on(Hls.Events.FRAG_LOADED, function () {
             _seekingStatusUntilFirstHLSFragmentLoad = false;
           });
