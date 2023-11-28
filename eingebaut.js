@@ -103,7 +103,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       $this.video
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
         .attr({'x-webkit-airplay':'allow', tabindex:-1, preload:'none', crossOrigin:'anonymous'})
-        .bind('error load loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough webkitbeginfullscreen webkitendfullscreen', function(e){
+        .bind('error load loadstart loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough webkitbeginfullscreen webkitendfullscreen', function(e){
           // Handle stalled property (which is basically "waiting")
           if(e.type=='waiting') $this.stalled = true;
           if(e.type=='playing'||e.type=='seeked'||e.type=='canplay') $this.stalled = false;
@@ -250,8 +250,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
   /* METHODS */
   _startTime = 0;
   _delayedSource = null;
-  _activateDelayedSource = function(){
-    if(_delayedSource){
+  _seekingStatusUntilFirstHLSFragmentLoad = false;
+  _activateDelayedSource = function () {
+    if (_delayedSource) {
       $this.setSource(_delayedSource.source, _delayedSource.startTime, null, false);
     }
   };
@@ -267,10 +268,15 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       if(!delay) {
         if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
           $this.setReady(false);
+          _seekingStatusUntilFirstHLSFragmentLoad = true;
           $this.hls = new Hls($this.hlsjsConfig);
           $this.hls.config.maxBufferLength = 30;
           $this.hls.config.maxMaxBufferLength = 60;
-          $this.hls.on(Hls.Events.ERROR, function(event, data) {
+          $this.callback("hlsjsload");
+          $this.hls.on(Hls.Events.FRAG_LOADED, function () {
+            _seekingStatusUntilFirstHLSFragmentLoad = false;
+          });
+          $this.hls.on(Hls.Events.ERROR, function (event, data) {
             console.log('HLS.js Error:', event, data);
             if(data.type=='mediaError' && data.details=='bufferFullError') {
               $this.hls.recoverMediaError();
@@ -284,7 +290,8 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           $this.hls.loadSource(source);
           $this.hls.attachMedia($this.video[0]);
           $this.video[0].load();
-        }else{
+          $this.callback("seeking");
+        } else {
           $this.video.attr({'src': source, tabindex : 0, 'data-tabindex' : 0});
         }
         _startTime = startTime;
@@ -526,6 +533,9 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     return $this.video.prop('ended');
   };
   $this.getSeeking = function() {
+    if ($this.displayDevice == 'html5' && _seekingStatusUntilFirstHLSFragmentLoad) {
+      return true;
+    }
     return $this.video.prop('seeking');
   };
   $this.getStalled = function() {
