@@ -102,7 +102,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
       $this.loadedFired = false;
       $this.video
         .css({position:'absolute', top:0, left:0, width:'100%', height:'100%'})
-        .attr({'x-webkit-airplay':'allow', tabindex:0, preload:'none', crossOrigin:'anonymous'})
+        .attr({'x-webkit-airplay':'allow', tabindex:-1, preload:'none', crossOrigin:'anonymous'})
         .bind('error load loadstart loadeddata progress timeupdate seeked seeking waiting stalled canplay play playing pause loadedmetadata ended volumechange canplaythrough webkitbeginfullscreen webkitendfullscreen', function(e){
           // Handle stalled property (which is basically "waiting")
           if(e.type=='waiting') $this.stalled = true;
@@ -292,7 +292,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
           $this.video[0].load();
           $this.callback("seeking");
         } else {
-          $this.video.prop('src', source);
+          $this.video.attr({'src': source, tabindex : 0, 'data-tabindex' : 0});
         }
         _startTime = startTime;
       }else{
