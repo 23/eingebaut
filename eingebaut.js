@@ -26,7 +26,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     $this.floatingPoster = $(document.createElement((/(MSIE|Trident)/.test(navigator.userAgent)) ? 'div' : 'img'));
     if ($this.floatingPoster.is('img')) {
       // We prefer doing this with <img crossorigin=anonymous> when object-fit is supported
-      $this.floatingPoster.attr({ crossOrigin: 'anonymous' }).css({ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }).hide();
+      $this.floatingPoster.attr({ crossOrigin: 'anonymous', alt: '' }).css({ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }).hide();
     } else {
       // This is also handled in Flash, so since browser up to and including IE8
       // don't support `background-size`, these are excluded entirely
