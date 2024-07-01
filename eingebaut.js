@@ -37,7 +37,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
 
   // Blind for click and overlay (1x1px transparent gif to force layout in IE8)
   $this.blind = $(document.createElement('div'))
-    .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundImage:'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==)'});
+    .css({position:'absolute', top:0, left:0, width:'100%', height:'100%', backgroundImage:'url(data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==)', pointerEvents:'none'});
   $this.container.append($this.blind);
 
   // The callback
