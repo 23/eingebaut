@@ -266,7 +266,14 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     $this.hls = null;
     if ($this.displayDevice=='html5') {
       if(!delay) {
-        if(/\.m3u8/.test(source) && !$this.video[0].canPlayType("application/vnd.apple.mpegurl")){
+        if(
+          /\.m3u8/.test(source)
+          && (
+            (Hls.isSupported && Hls.isSupported() && /(Android)/.test(navigator.userAgent))
+            ||
+            !$this.video[0].canPlayType("application/vnd.apple.mpegurl")
+          )
+        ) {
           $this.setReady(false);
           _seekingStatusUntilFirstHLSFragmentLoad = true;
           $this.hls = new Hls($this.hlsjsConfig);
