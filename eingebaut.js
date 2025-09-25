@@ -47,6 +47,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
     // but also enabling a mode where the thumbnail is displayed when the video ends
     switch(e) {
       case 'play':
+      case 'timeupdate':
       case 'playing':
         if($this.floatingPoster) $this.floatingPoster.hide();
         $this.container.css({background:'none'});
@@ -55,7 +56,12 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         if($this.floatingPoster&&$this.showPosterOnEnd) $this.floatingPoster.show();
         break;
       case 'autoplayfailed':
-        if($this.floatingPoster) $this.floatingPoster.show();
+        if($this.floatingPoster) {
+          $this.floatingPoster.show();
+          window.setTimeout(function(){
+            if(!$this.getPlaying()) $this.floatingPoster.show();
+          }, 300);
+        }
         break;
       case 'leavefullscreen':
       case 'enterfullscreen':
