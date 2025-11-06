@@ -275,7 +275,7 @@ var Eingebaut = function(container, displayDevice, swfLocation, callback, option
         if(
           /\.m3u8/.test(source)
           && (
-            (Hls.isSupported && Hls.isSupported() && /(Android)/.test(navigator.userAgent))
+            (Hls.isSupported && Hls.isSupported() && /(Android|Chrome)/.test(navigator.userAgent))
             ||
             !$this.video[0].canPlayType("application/vnd.apple.mpegurl")
           )
